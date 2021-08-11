@@ -1,0 +1,17 @@
+{
+	"ConnectionStrings": {
+		"LawyerAppConnectionString": "server=(localdb)\\ProjectsV13;Database=LawyerApp;Integrated Security=true;MultipleActiveResultSets=true;"
+	},
+	"Logging": {
+		"LogLevel": {
+			"LawyerApp": "Information",
+			"Microsoft": "Warning"
+		}
+	},
+	"AllowedHosts": "*",
+	"Tokens": {
+		"Key": "asdasdasdv saadsfasdfa34gzasfvasdgg",
+		"Issuer": "localhost",
+		"Audience": "localhost"
+	}
+}
