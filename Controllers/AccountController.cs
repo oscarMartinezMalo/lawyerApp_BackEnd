@@ -40,7 +40,7 @@ namespace LawyerApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await userManager.FindByNameAsync(model.UserName);
+                var user = await userManager.FindByNameAsync(model.Email);
 
                 if (user != null)
                 {
@@ -69,8 +69,12 @@ namespace LawyerApp.Controllers
 
                         var results = new
                         {
-                            token = new JwtSecurityTokenHandler().WriteToken(token),
-                            expiration = token.ValidTo
+                            id = user.Id,
+                            email = user.Email,
+                            role = "NotSetYet",
+                            accessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                            refreshToken = new JwtSecurityTokenHandler().WriteToken(token),
+                            expiration = token.ValidTo,
                         };
 
                         return Created("", results);
@@ -78,7 +82,7 @@ namespace LawyerApp.Controllers
                 }
             }
 
-            return BadRequest();
+            return Unauthorized();
         }
 
     }
