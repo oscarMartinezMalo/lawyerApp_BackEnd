@@ -12,6 +12,7 @@ namespace LawyerApp.Data
 
             CreateMap<Client, ClientViewModel>().ReverseMap();
 
+            CreateMap<LawyerUser, SignupViewModel>().ReverseMap();
         }
     }
 }

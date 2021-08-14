@@ -1,4 +1,5 @@
-﻿using LawyerApp.Data.Entities;
+﻿using AutoMapper;
+using LawyerApp.Data.Entities;
 using LawyerApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,30 +14,34 @@ using System.Threading.Tasks;
 
 namespace LawyerApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
         private readonly ILogger<AccountController> logger;
         private readonly SignInManager<LawyerUser> signInManager;
         private readonly UserManager<LawyerUser> userManager;
+        private readonly IMapper mapper;
         private readonly IConfiguration config;
 
         public AccountController(ILogger<AccountController> logger,
             SignInManager<LawyerUser> signInManager,
             UserManager<LawyerUser> userManager,
+            IMapper mapper,
             IConfiguration config
             )
         {
             this.logger = logger;
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.mapper = mapper;
             this.config = config;
         }
 
         // Get Token to used in Angular
         [HttpPost]
-        public async Task<IActionResult> CreateToken([FromBody] LoginViewModel model)
+        [ActionName("signin")]
+        public async Task<IActionResult> GenerateToken([FromBody] LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -85,5 +90,23 @@ namespace LawyerApp.Controllers
             return Unauthorized();
         }
 
+        [HttpPost]
+        [ActionName("signup")]
+        public async Task<IActionResult> SignUp([FromBody] SignupViewModel model)
+        {
+            try
+            {
+                var user = mapper.Map<LawyerUser>(model);
+                user.UserName = model.Email;
+
+                var result = await userManager.CreateAsync(user, model.Password);
+                return Created("", result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 }
