@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using LawyerApp.Data.Entities;
+using LawyerApp.Services;
 using LawyerApp.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -21,12 +24,14 @@ namespace LawyerApp.Controllers
         private readonly ILogger<AccountController> logger;
         private readonly SignInManager<LawyerUser> signInManager;
         private readonly UserManager<LawyerUser> userManager;
+        private readonly IMailService mailService;
         private readonly IMapper mapper;
         private readonly IConfiguration config;
 
         public AccountController(ILogger<AccountController> logger,
             SignInManager<LawyerUser> signInManager,
             UserManager<LawyerUser> userManager,
+            IMailService mailService,
             IMapper mapper,
             IConfiguration config
             )
@@ -34,6 +39,7 @@ namespace LawyerApp.Controllers
             this.logger = logger;
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.mailService = mailService;
             this.mapper = mapper;
             this.config = config;
         }
@@ -75,6 +81,7 @@ namespace LawyerApp.Controllers
                         var results = new
                         {
                             id = user.Id,
+                            firstName = user.FirstName,
                             email = user.Email,
                             role = "NotSetYet",
                             accessToken = new JwtSecurityTokenHandler().WriteToken(token),
@@ -100,13 +107,48 @@ namespace LawyerApp.Controllers
                 user.UserName = model.Email;
 
                 var result = await userManager.CreateAsync(user, model.Password);
-                return Created("", result);
+                if (result.Succeeded) return Created("", result);
+
+                return BadRequest(result);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
 
+        }
+
+        [HttpPost]
+        [ActionName("forgotPassword")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordViewModel model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+
+            if (user == null) return BadRequest(); //&& userManager.IsEmailConfirmedAsync(user)
+            try
+            {
+                var token = await userManager.GeneratePasswordResetTokenAsync(user);
+                var passwordResetLink = Url.Action("ResetPassword", "Account", new { token });
+                mailService.SendMessage($"{user.Email}", "Reset you Email", passwordResetLink);
+            }
+            catch (Exception ex)            {
+
+                logger.LogError($"Failed to create link: {ex}");
+
+            }
+
+            return Ok(new { message = "A reset link was sent to your Email" });
+        }
+
+        [HttpGet]
+        [ActionName("getUser")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetUserByToken()
+        {
+            var userAccount = await userManager.FindByNameAsync(User.Identity.Name);
+            var user = mapper.Map<LawyerUser, LoginResponseViewModel>(userAccount);
+            return Ok(user);
         }
     }
 }

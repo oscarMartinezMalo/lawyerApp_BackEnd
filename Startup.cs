@@ -48,7 +48,8 @@ namespace LawyerApp
                 cfg.SignIn.RequireConfirmedAccount = false;
 
             })
-                .AddEntityFrameworkStores<LawyerAppContext>();
+                .AddEntityFrameworkStores<LawyerAppContext>()
+                .AddDefaultTokenProviders();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
