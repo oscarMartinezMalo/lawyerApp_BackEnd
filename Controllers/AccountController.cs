@@ -118,24 +118,23 @@ namespace LawyerApp.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPut]
         [ActionName("forgotPassword")]
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordViewModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
 
-            if (user == null) return BadRequest(); //&& userManager.IsEmailConfirmedAsync(user)
+            if (user == null) return Ok(new { message = "A reset link was sent to your Email" }); //&& userManager.IsEmailConfirmedAsync(user)
             try
             {
                 var token = await userManager.GeneratePasswordResetTokenAsync(user);
                 var passwordResetLink = Url.Action("ResetPassword", "Account", new { token });
                 mailService.SendMessage($"{user.Email}", "Reset you Email", passwordResetLink);
             }
-            catch (Exception ex)            {
-
+            catch (Exception ex)
+            {
                 logger.LogError($"Failed to create link: {ex}");
-
             }
 
             return Ok(new { message = "A reset link was sent to your Email" });
