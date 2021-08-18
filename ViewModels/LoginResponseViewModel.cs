@@ -11,6 +11,6 @@ namespace LawyerApp.ViewModels
         [Required]
         public string Email { get; set; }
         [Required]
-        public string role { get; set; }
+        public string Role { get; set; }
     }
 }

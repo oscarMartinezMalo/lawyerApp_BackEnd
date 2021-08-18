@@ -13,5 +13,8 @@
 		"Key": "asdasdasdv saadsfasdfa34gzasfvasdgg",
 		"Issuer": "localhost",
 		"Audience": "localhost"
+	},
+	"FrontEnd": {
+		"Url": "http://localhost:4200/"
 	}
 }

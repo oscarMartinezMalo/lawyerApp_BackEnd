@@ -129,8 +129,10 @@ namespace LawyerApp.Controllers
             try
             {
                 var token = await userManager.GeneratePasswordResetTokenAsync(user);
-                var passwordResetLink = Url.Action("ResetPassword", "Account", new { token });
-                mailService.SendMessage($"{user.Email}", "Reset you Email", passwordResetLink);
+
+                var resetPasswordLink = config["FrontEnd:url"] + "forgot-password-token?token=" + token;
+
+                mailService.SendMessage($"{user.Email}", "Reset you Email", resetPasswordLink);
             }
             catch (Exception ex)
             {
