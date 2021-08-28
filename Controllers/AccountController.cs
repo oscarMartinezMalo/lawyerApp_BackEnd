@@ -151,5 +151,36 @@ namespace LawyerApp.Controllers
             var user = mapper.Map<LawyerUser, LoginResponseViewModel>(userAccount);
             return Ok(user);
         }
+
+        [HttpPost]
+        [ActionName("forgotPasswordToken")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordTokenViewModel model)
+        {
+            try
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var result = await userManager.ResetPasswordAsync(user, model.ForgotPasswordToken, model.Password);
+                    if (result.Succeeded)
+                    {
+                        return Ok("Password successfully changed");
+                    }
+                    else
+                    {
+                        return BadRequest(result.Errors);
+                    }
+                }
+
+                return Ok("Password successfully changed");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
     }
 }
