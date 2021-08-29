@@ -155,21 +155,24 @@ namespace LawyerApp.Controllers
         [HttpPost]
         [ActionName("forgotPasswordToken")]
         [AllowAnonymous]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordTokenViewModel model)
+        public async Task<IActionResult> ForgotPasswordToken([FromBody] ResetPasswordTokenViewModel model)
         {
             try
             {
                 var user = await userManager.FindByEmailAsync(model.Email);
                 if (user != null)
                 {
+                    // Replace blank with + sign because the browser url automaticaly change it in the frontEnd
+                    model.ForgotPasswordToken = model.ForgotPasswordToken.Replace(' ', '+');
+
                     var result = await userManager.ResetPasswordAsync(user, model.ForgotPasswordToken, model.Password);
                     if (result.Succeeded)
                     {
-                        return Ok("Password successfully changed");
+                        return Ok(new { message = "Password successfully changed" });
                     }
                     else
                     {
-                        return BadRequest(result.Errors);
+                        return Unauthorized(result.Errors);
                     }
                 }
 
