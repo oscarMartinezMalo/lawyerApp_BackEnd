@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LawyerApp.ViewModels
 {
-    public class ClientViewModel
+    public class ClientDto
     {
         public int Id { get; set; }
         [Required]
@@ -18,6 +18,6 @@ namespace LawyerApp.ViewModels
         [Required]
         [MinLength(6)]
         public string Phone { get; set; }
-        public ICollection<CaseViewModel> Cases { get; set; }
+        public ICollection<CaseDto> Cases { get; set; }
     }
 }

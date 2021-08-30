@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LawyerApp.ViewModels
 {
-    public class CaseViewModel
+    public class CaseDto
     {
         public int Id { get; set; }
         [Required]

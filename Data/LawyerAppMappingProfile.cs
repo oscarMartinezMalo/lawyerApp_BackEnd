@@ -8,13 +8,13 @@ namespace LawyerApp.Data
     {
         public LawyerAppMappingProfile()
         {
-            CreateMap<Case, CaseViewModel>().ReverseMap();
+            CreateMap<Case, CaseDto>().ReverseMap();
 
-            CreateMap<Client, ClientViewModel>().ReverseMap();
+            CreateMap<Client, ClientDto>().ReverseMap();
 
-            CreateMap<LawyerUser, LoginResponseViewModel>().ReverseMap();
+            CreateMap<LawyerUser, LoginResponseDto>().ReverseMap();
 
-            CreateMap<LawyerUser, SignupViewModel>().ReverseMap();
+            CreateMap<LawyerUser, SignupDto>().ReverseMap();
         }
     }
 }

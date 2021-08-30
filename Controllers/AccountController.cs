@@ -4,6 +4,7 @@ using LawyerApp.Services;
 using LawyerApp.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,7 @@ namespace LawyerApp.Controllers
         private readonly ILogger<AccountController> logger;
         private readonly SignInManager<LawyerUser> signInManager;
         private readonly UserManager<LawyerUser> userManager;
+        public readonly RoleManager<IdentityRole> roleManager;
         private readonly IMailService mailService;
         private readonly IMapper mapper;
         private readonly IConfiguration config;
@@ -31,6 +33,7 @@ namespace LawyerApp.Controllers
         public AccountController(ILogger<AccountController> logger,
             SignInManager<LawyerUser> signInManager,
             UserManager<LawyerUser> userManager,
+            RoleManager<IdentityRole> roleManager,
             IMailService mailService,
             IMapper mapper,
             IConfiguration config
@@ -39,6 +42,7 @@ namespace LawyerApp.Controllers
             this.logger = logger;
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.roleManager = roleManager;
             this.mailService = mailService;
             this.mapper = mapper;
             this.config = config;
@@ -47,7 +51,7 @@ namespace LawyerApp.Controllers
         // Get Token to used in Angular
         [HttpPost]
         [ActionName("signin")]
-        public async Task<IActionResult> GenerateToken([FromBody] LoginViewModel model)
+        public async Task<IActionResult> GenerateToken([FromBody] LoginDto model)
         {
             if (ModelState.IsValid)
             {
@@ -99,7 +103,7 @@ namespace LawyerApp.Controllers
 
         [HttpPost]
         [ActionName("signup")]
-        public async Task<IActionResult> SignUp([FromBody] SignupViewModel model)
+        public async Task<IActionResult> SignUp([FromBody] SignupDto model)
         {
             try
             {
@@ -107,7 +111,14 @@ namespace LawyerApp.Controllers
                 user.UserName = model.Email;
 
                 var result = await userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded) return Created("", result);
+                var test = Request.GetDisplayUrl();
+                if (result.Succeeded)
+                {
+                    //var resultRole = await roleManager.CreateAsync(new IdentityRole("Lawyer"));
+                    await userManager.AddToRoleAsync(user, "Lawyer");
+
+                    return Created("", model);
+                }
 
                 return BadRequest(result);
             }
@@ -121,7 +132,7 @@ namespace LawyerApp.Controllers
         [HttpPut]
         [ActionName("forgotPassword")]
         [AllowAnonymous]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordViewModel model)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
 
@@ -148,14 +159,14 @@ namespace LawyerApp.Controllers
         public async Task<IActionResult> GetUserByToken()
         {
             var userAccount = await userManager.FindByNameAsync(User.Identity.Name);
-            var user = mapper.Map<LawyerUser, LoginResponseViewModel>(userAccount);
+            var user = mapper.Map<LawyerUser, LoginResponseDto>(userAccount);
             return Ok(user);
         }
 
         [HttpPost]
         [ActionName("forgotPasswordToken")]
         [AllowAnonymous]
-        public async Task<IActionResult> ForgotPasswordToken([FromBody] ResetPasswordTokenViewModel model)
+        public async Task<IActionResult> ForgotPasswordToken([FromBody] ResetPasswordTokenDto model)
         {
             try
             {

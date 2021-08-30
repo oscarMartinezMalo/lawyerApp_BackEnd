@@ -36,7 +36,7 @@ namespace LawyerApp.Controllers
         public IActionResult Get(int cliendid)
         {
             var client = repository.GetClientById(cliendid);
-            if (client != null) return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseViewModel>>(client.Cases));
+            if (client != null) return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(client.Cases));
             return NotFound();
         }
 
@@ -49,7 +49,7 @@ namespace LawyerApp.Controllers
                 var caseSelected = client.Cases.Where(ca => ca.Id == caseid).FirstOrDefault();
                 if (caseSelected != null)
                 {
-                    return Ok(mapper.Map<Case, CaseViewModel>(caseSelected));
+                    return Ok(mapper.Map<Case, CaseDto>(caseSelected));
                 }
             }
             return NotFound();

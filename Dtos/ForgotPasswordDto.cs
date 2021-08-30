@@ -2,7 +2,7 @@
 
 namespace LawyerApp.ViewModels
 {
-    public class ForgotPasswordViewModel
+    public class ForgotPasswordDto
     {
         [Required]
         [EmailAddress]

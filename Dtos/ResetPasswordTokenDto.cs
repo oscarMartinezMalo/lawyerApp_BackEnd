@@ -2,7 +2,7 @@
 
 namespace LawyerApp.ViewModels
 {
-    public class ResetPasswordTokenViewModel
+    public class ResetPasswordTokenDto
     {
         [Required]
         public string Email { get; set; }

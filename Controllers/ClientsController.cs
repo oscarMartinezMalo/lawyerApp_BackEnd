@@ -41,7 +41,7 @@ namespace LawyerApp.Controllers
             try
             {
                 var results = repository.GetAllClients(includesCases);
-                return Ok(mapper.Map<IEnumerable<Client>, IEnumerable<ClientViewModel>>(results));
+                return Ok(mapper.Map<IEnumerable<Client>, IEnumerable<ClientDto>>(results));
             }
             catch (Exception ex)
             {
@@ -58,7 +58,7 @@ namespace LawyerApp.Controllers
             {
                 var client = repository.GetClientById(id);
 
-                if (client != null) { return Ok(mapper.Map<Client, ClientViewModel>(client)); }
+                if (client != null) { return Ok(mapper.Map<Client, ClientDto>(client)); }
                 else { return NotFound(); }
             }
             catch (Exception ex)
@@ -70,18 +70,18 @@ namespace LawyerApp.Controllers
 
         // POST api/<ClientsController>
         [HttpPost]
-        public IActionResult Post([FromBody] ClientViewModel model)
+        public IActionResult Post([FromBody] ClientDto model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var newClient = mapper.Map<ClientViewModel, Client>(model);
+                    var newClient = mapper.Map<ClientDto, Client>(model);
 
                     repository.AddEntity(newClient);
                     if (repository.SaveAll())
                     {
-                        return Created($"/api/clients/{newClient.Id}", mapper.Map<Client, ClientViewModel>(newClient));
+                        return Created($"/api/clients/{newClient.Id}", mapper.Map<Client, ClientDto>(newClient));
                     }
                 }
                 else

@@ -43,7 +43,7 @@ namespace LawyerApp.Controllers
             {
                 var lawyerUser = User.Identity.Name;
 
-                return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseViewModel>>(repository.GetAllCasesByUserName(lawyerUser)));
+                return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(repository.GetAllCasesByUserName(lawyerUser)));
             }
             catch (Exception ex)
             {
@@ -60,7 +60,7 @@ namespace LawyerApp.Controllers
             {
                 var oneCase = repository.GetCaseById(id);
 
-                if (oneCase != null) { return Ok(mapper.Map<Case, CaseViewModel>(oneCase)); }
+                if (oneCase != null) { return Ok(mapper.Map<Case, CaseDto>(oneCase)); }
                 else { return NotFound(); }
             }
             catch (Exception ex)
@@ -72,18 +72,18 @@ namespace LawyerApp.Controllers
 
         // POST api/<CasesController>
         [HttpPost]
-        public IActionResult Post([FromBody] CaseViewModel model)
+        public IActionResult Post([FromBody] CaseDto model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var newCase = mapper.Map<CaseViewModel, Case>(model);
+                    var newCase = mapper.Map<CaseDto, Case>(model);
 
                     repository.AddEntity(newCase);
                     if (repository.SaveAll())
                     {
-                        return Created($"/api/orders/{newCase.Id}", mapper.Map<Case, CaseViewModel>(newCase));
+                        return Created($"/api/orders/{newCase.Id}", mapper.Map<Case, CaseDto>(newCase));
                     }
                 }
                 else
