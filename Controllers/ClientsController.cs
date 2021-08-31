@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using LawyerApp.Data;
 using LawyerApp.Data.Entities;
+using LawyerApp.Repositories;
 using LawyerApp.ViewModels;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,16 +19,19 @@ namespace LawyerApp.Controllers
     {
         private readonly ILawyerAppRepository repository;
         private readonly ILogger<CasesController> logger;
+        private readonly IClientRepository clientRepository;
         private readonly IMapper mapper;
 
         public ClientsController(
             ILawyerAppRepository repository,
             ILogger<CasesController> logger,
+            IClientRepository clientRepository,
             IMapper mapper)
         {
             this.repository = repository;
-            this.logger = logger;
             this.mapper = mapper;
+            this.logger = logger;
+            this.clientRepository = clientRepository;
         }
 
         // GET: api/<ClientsController>
@@ -40,7 +42,7 @@ namespace LawyerApp.Controllers
         {
             try
             {
-                var results = repository.GetAllClients(includesCases);
+                var results = clientRepository.GetAllClients(includesCases);
                 return Ok(mapper.Map<IEnumerable<Client>, IEnumerable<ClientDto>>(results));
             }
             catch (Exception ex)
@@ -56,7 +58,7 @@ namespace LawyerApp.Controllers
         {
             try
             {
-                var client = repository.GetClientById(id);
+                var client = clientRepository.GetClientById(id);
 
                 if (client != null) { return Ok(mapper.Map<Client, ClientDto>(client)); }
                 else { return NotFound(); }
@@ -78,8 +80,8 @@ namespace LawyerApp.Controllers
                 {
                     var newClient = mapper.Map<ClientDto, Client>(model);
 
-                    repository.AddEntity(newClient);
-                    if (repository.SaveAll())
+                    clientRepository.AddEntity(newClient);
+                    if (clientRepository.SaveAll())
                     {
                         return Created($"/api/clients/{newClient.Id}", mapper.Map<Client, ClientDto>(newClient));
                     }

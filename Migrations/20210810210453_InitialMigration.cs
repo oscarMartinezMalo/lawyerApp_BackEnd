@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace LawyerApp.Migrations
 {
@@ -198,11 +198,6 @@ namespace LawyerApp.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.InsertData(
-                table: "Clients",
-                columns: new[] { "Id", "Address", "FirstName", "LastName", "Phone" },
-                values: new object[] { 1, "5ta entre B y C", "Katherine", "Llosa", "786-789-8976" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

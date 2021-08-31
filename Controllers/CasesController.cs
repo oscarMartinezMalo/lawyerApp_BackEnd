@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using LawyerApp.Data;
 using LawyerApp.Data.Entities;
+using LawyerApp.Repositories;
 using LawyerApp.ViewModels;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -16,19 +14,19 @@ namespace LawyerApp.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CasesController : ControllerBase
     {
-        private readonly ILawyerAppRepository repository;
+        private readonly ICaseRepository repository;
         private readonly ILogger<CasesController> logger;
         private readonly IMapper mapper;
 
         public CasesController(
-            ILawyerAppRepository repository,
+            ICaseRepository caseRepository,
             ILogger<CasesController> logger,
             IMapper mapper)
         {
-            this.repository = repository;
+            this.repository = caseRepository;
             this.logger = logger;
             this.mapper = mapper;
         }

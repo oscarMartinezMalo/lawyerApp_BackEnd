@@ -1,31 +1,35 @@
 ﻿using LawyerApp.Data;
 using LawyerApp.Models;
+using LawyerApp.Repositories;
 using LawyerApp.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace LawyerApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
         private readonly IMailService mailService;
         private readonly ILawyerAppRepository repository;
+        private readonly ICaseRepository caseRepository;
 
         public HomeController(
-            ILogger<HomeController> logger,
+            //ILogger<HomeController> logger,
             IMailService mailService,
-            ILawyerAppRepository repository)
+            ILawyerAppRepository repository,
+            ICaseRepository caseRepository
+            )
         {
-            _logger = logger;
+            //_logger = logger;
             this.mailService = mailService;
             this.repository = repository;
+            this.caseRepository = caseRepository;
         }
 
         public IActionResult Index()
         {
-            var result = repository.GetAllCases();
+            var result = caseRepository.GetAllCases();
             mailService.SendMessage("ommalor@gmail.com", "Oscar", "Body of Message");
             return View();
         }

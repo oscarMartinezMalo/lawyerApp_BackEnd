@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using LawyerApp.Data;
 using LawyerApp.Data.Entities;
+using LawyerApp.Repositories;
 using LawyerApp.ViewModels;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,23 +17,27 @@ namespace LawyerApp.Controllers
     {
 
         private readonly ILawyerAppRepository repository;
-        private readonly ILogger<ClientCasesController> logger;
+        private readonly IClientRepository clientRepository;
+
+        //private readonly ILogger<ClientCasesController> logger;
         private readonly IMapper mapper;
 
         public ClientCasesController(
             ILawyerAppRepository repository,
-            ILogger<ClientCasesController> logger,
+            //ILogger<ClientCasesController> logger,
+            IClientRepository clientRepository,
             IMapper mapper)
         {
             this.repository = repository;
-            this.logger = logger;
+            this.clientRepository = clientRepository;
+            //this.logger = logger;
             this.mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Get(int cliendid)
         {
-            var client = repository.GetClientById(cliendid);
+            var client = clientRepository.GetClientById(cliendid);
             if (client != null) return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(client.Cases));
             return NotFound();
         }
@@ -43,7 +45,7 @@ namespace LawyerApp.Controllers
         [HttpGet("{caseid}")]
         public IActionResult Get(int cliendid, int caseid)
         {
-            var client = repository.GetClientById(cliendid);
+            var client = clientRepository.GetClientById(cliendid);
             if (client != null)
             {
                 var caseSelected = client.Cases.Where(ca => ca.Id == caseid).FirstOrDefault();

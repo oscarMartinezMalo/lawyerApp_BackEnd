@@ -114,8 +114,9 @@ namespace LawyerApp.Controllers
                 var test = Request.GetDisplayUrl();
                 if (result.Succeeded)
                 {
-                    //var resultRole = await roleManager.CreateAsync(new IdentityRole("Lawyer"));
-                    await userManager.AddToRoleAsync(user, "Lawyer");
+                    // Create a role and assign it to the User
+                    //var resultRole = await roleManager.CreateAsync(new IdentityRole("Admin"));
+                    //await userManager.AddToRoleAsync(user, "Admin");
 
                     return Created("", model);
                 }
