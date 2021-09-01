@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using LawyerApp.Data.Entities;
-using LawyerApp.Persistent;
+using LawyerApp.Repositories;
 using LawyerApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,33 +15,25 @@ namespace LawyerApp.Controllers
     [ApiController]
     public class ClientCasesController : ControllerBase
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IClientRepository clientRepository;
 
-        //private readonly ILawyerAppRepository repository;
-        //private readonly IClientRepository clientRepository;
-
-        //private readonly ILogger<ClientCasesController> logger;
+        private readonly ILogger<ClientCasesController> logger;
         private readonly IMapper mapper;
 
         public ClientCasesController(
-            //ILawyerAppRepository repository,
-            //ILogger<ClientCasesController> logger,
-            IUnitOfWork unitOfWork,
-            //IClientRepository clientRepository,
+            ILogger<ClientCasesController> logger,
+            IClientRepository clientRepository,
             IMapper mapper)
         {
-            this.unitOfWork = unitOfWork;
-            //this.repository = repository;
-            //this.clientRepository = clientRepository;
-            //this.logger = logger;
+            this.clientRepository = clientRepository;
+            this.logger = logger;
             this.mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Get(int cliendid)
         {
-            var client = unitOfWork.Clients.GetClientById(cliendid);
-            //var client = clientRepository.GetClientById(cliendid);
+            var client = clientRepository.GetClientById(cliendid);
             if (client != null) return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(client.Cases));
             return NotFound();
         }
@@ -48,8 +41,7 @@ namespace LawyerApp.Controllers
         [HttpGet("{caseid}")]
         public IActionResult Get(int cliendid, int caseid)
         {
-            //var client = clientRepository.GetClientById(cliendid);
-            var client = unitOfWork.Clients.GetClientById(cliendid);
+            var client = clientRepository.GetClientById(cliendid);
             if (client != null)
             {
                 var caseSelected = client.Cases.Where(ca => ca.Id == caseid).FirstOrDefault();

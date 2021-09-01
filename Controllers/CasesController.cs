@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using LawyerApp.Data.Entities;
-using LawyerApp.Persistent;
+using LawyerApp.Repositories;
 using LawyerApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,19 +17,16 @@ namespace LawyerApp.Controllers
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CasesController : ControllerBase
     {
-        //private readonly ICaseRepository repository;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ICaseRepository repository;
         private readonly ILogger<CasesController> logger;
         private readonly IMapper mapper;
 
         public CasesController(
-            //ICaseRepository caseRepository,
-            IUnitOfWork unitOfWork,
+            ICaseRepository caseRepository,
             ILogger<CasesController> logger,
             IMapper mapper)
         {
-            //this.repository = caseRepository;
-            this.unitOfWork = unitOfWork;
+            this.repository = caseRepository;
             this.logger = logger;
             this.mapper = mapper;
         }
@@ -44,8 +41,7 @@ namespace LawyerApp.Controllers
             {
                 var lawyerUser = User.Identity.Name;
 
-                //return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(repository.GetAllCasesByUserName(lawyerUser)));
-                return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(unitOfWork.Cases.GetAllCasesByUserName(lawyerUser)));
+                return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(repository.GetAllCasesByUserName(lawyerUser)));
             }
             catch (Exception ex)
             {
@@ -60,8 +56,7 @@ namespace LawyerApp.Controllers
         {
             try
             {
-                var oneCase = unitOfWork.Cases.GetCaseById(id);
-                //var oneCase = repository.GetCaseById(id);
+                var oneCase = repository.GetCaseById(id);
 
                 if (oneCase != null) { return Ok(mapper.Map<Case, CaseDto>(oneCase)); }
                 else { return NotFound(); }
@@ -83,10 +78,8 @@ namespace LawyerApp.Controllers
                 {
                     var newCase = mapper.Map<CaseDto, Case>(model);
 
-                    unitOfWork.AddEntity(newCase);
-                    //repository.AddEntity(newCase);
-                    //if (repository.SaveAll())
-                    if (unitOfWork.Complete())
+                    repository.AddEntity(newCase);
+                    if (repository.SaveAll())
                     {
                         return Created($"/api/orders/{newCase.Id}", mapper.Map<Case, CaseDto>(newCase));
                     }
