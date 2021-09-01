@@ -1,5 +1,4 @@
 ﻿using LawyerApp.Models;
-using LawyerApp.Persistent;
 using LawyerApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -8,32 +7,18 @@ namespace LawyerApp.Controllers
 {
     public class HomeController : Controller
     {
-        //private readonly ILogger<HomeController> _logger;
         private readonly IMailService mailService;
-        private readonly IUnitOfWork unitOfWork;
-
-        //private readonly ILawyerAppRepository repository;
-        //private readonly ICaseRepository caseRepository;
 
         public HomeController(
-            //ILogger<HomeController> logger,
-            IMailService mailService,
-            IUnitOfWork unitOfWork
-            //ILawyerAppRepository repository,
-            //ICaseRepository caseRepository
+            IMailService mailService
             )
         {
-            //_logger = logger;
             this.mailService = mailService;
-            this.unitOfWork = unitOfWork;
-            //this.repository = repository;
-            //this.caseRepository = caseRepository;
         }
 
         public IActionResult Index()
         {
-            var result = unitOfWork.Cases.GetAllCases();
-            //var result = caseRepository.GetAllCases();
+            // Sample of using a service
             mailService.SendMessage("ommalor@gmail.com", "Oscar", "Body of Message");
             return View();
         }
