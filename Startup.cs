@@ -1,6 +1,6 @@
 using LawyerApp.Data;
 using LawyerApp.Data.Entities;
-using LawyerApp.Repositories;
+using LawyerApp.Persistent;
 using LawyerApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -60,9 +60,10 @@ namespace LawyerApp
 
             services.AddTransient<LawyerAppSeeder>();
 
-            services.AddScoped<ILawyerAppRepository, LawyerAppRepository>();
-            services.AddScoped<ICaseRepository, CaseRepository>();
-            services.AddScoped<IClientRepository, ClientRepository>();
+            //services.AddScoped<ILawyerAppRepository, LawyerAppRepository>();
+            //services.AddScoped<ICaseRepository, CaseRepository>();
+            //services.AddScoped<IClientRepository, ClientRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
             services.AddDbContext<LawyerAppContext>(cfg =>
