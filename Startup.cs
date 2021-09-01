@@ -62,7 +62,6 @@ namespace LawyerApp
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-
             services.AddDbContext<LawyerAppContext>(cfg =>
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("LawyerAppConnectionString"));
