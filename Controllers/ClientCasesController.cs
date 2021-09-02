@@ -15,24 +15,13 @@ namespace LawyerApp.Controllers
     public class ClientCasesController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
-
-        //private readonly ILawyerAppRepository repository;
-        //private readonly IClientRepository clientRepository;
-
-        //private readonly ILogger<ClientCasesController> logger;
         private readonly IMapper mapper;
 
         public ClientCasesController(
-            //ILawyerAppRepository repository,
-            //ILogger<ClientCasesController> logger,
             IUnitOfWork unitOfWork,
-            //IClientRepository clientRepository,
             IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
-            //this.repository = repository;
-            //this.clientRepository = clientRepository;
-            //this.logger = logger;
             this.mapper = mapper;
         }
 
@@ -40,7 +29,6 @@ namespace LawyerApp.Controllers
         public IActionResult Get(int cliendid)
         {
             var client = unitOfWork.Clients.GetClientById(cliendid);
-            //var client = clientRepository.GetClientById(cliendid);
             if (client != null) return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(client.Cases));
             return NotFound();
         }
@@ -48,7 +36,6 @@ namespace LawyerApp.Controllers
         [HttpGet("{caseid}")]
         public IActionResult Get(int cliendid, int caseid)
         {
-            //var client = clientRepository.GetClientById(cliendid);
             var client = unitOfWork.Clients.GetClientById(cliendid);
             if (client != null)
             {

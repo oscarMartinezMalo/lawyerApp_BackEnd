@@ -60,9 +60,6 @@ namespace LawyerApp
 
             services.AddTransient<LawyerAppSeeder>();
 
-            //services.AddScoped<ILawyerAppRepository, LawyerAppRepository>();
-            //services.AddScoped<ICaseRepository, CaseRepository>();
-            //services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
