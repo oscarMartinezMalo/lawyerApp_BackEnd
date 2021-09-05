@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LawyerApp.Migrations
 {
     [DbContext(typeof(LawyerAppContext))]
-    [Migration("20210831013855_SeedUser")]
-    partial class SeedUser
+    [Migration("20210905011536_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,17 +37,12 @@ namespace LawyerApp.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LawyerId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("LawyerId");
 
                     b.ToTable("Cases");
                 });
@@ -68,10 +63,15 @@ namespace LawyerApp.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("LawyerId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LawyerId");
 
                     b.ToTable("Clients");
 
@@ -296,11 +296,14 @@ namespace LawyerApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LawyerApp.Data.Entities.LawyerUser", "Lawyer")
-                        .WithMany()
-                        .HasForeignKey("LawyerId");
-
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("LawyerApp.Data.Entities.Client", b =>
+                {
+                    b.HasOne("LawyerApp.Data.Entities.LawyerUser", "Lawyer")
+                        .WithMany("Clients")
+                        .HasForeignKey("LawyerId");
 
                     b.Navigation("Lawyer");
                 });
@@ -359,6 +362,11 @@ namespace LawyerApp.Migrations
             modelBuilder.Entity("LawyerApp.Data.Entities.Client", b =>
                 {
                     b.Navigation("Cases");
+                });
+
+            modelBuilder.Entity("LawyerApp.Data.Entities.LawyerUser", b =>
+                {
+                    b.Navigation("Clients");
                 });
 #pragma warning restore 612, 618
         }

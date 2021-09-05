@@ -48,7 +48,7 @@ namespace LawyerApp.Data
                         CaseNumber = "1111",
                         Type = "Inmigration",
                         Client = client,
-                        Lawyer = user
+                        //Lawyer = user
                     };
 
                     ctx.Add(newCase);

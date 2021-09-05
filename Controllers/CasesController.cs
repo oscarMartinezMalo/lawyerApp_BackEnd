@@ -2,10 +2,13 @@
 using LawyerApp.Data.Entities;
 using LawyerApp.Persistent;
 using LawyerApp.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,7 +17,7 @@ namespace LawyerApp.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CasesController : ControllerBase
     {
         //private readonly ICaseRepository repository;
@@ -45,7 +48,7 @@ namespace LawyerApp.Controllers
                 var lawyerUser = User.Identity.Name;
 
                 //return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(repository.GetAllCasesByUserName(lawyerUser)));
-                return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(unitOfWork.Cases.GetAllCasesByUserName(lawyerUser)));
+                return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(unitOfWork.Cases.GetAllCasesByLawyer(lawyerUser)));
             }
             catch (Exception ex)
             {

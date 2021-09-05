@@ -22,12 +22,12 @@ namespace LawyerApp.Repositories
                 .ToList();
         }
 
-        public IEnumerable<Case> GetAllCasesByUserName(string lawyerUserName)
+        public IEnumerable<Case> GetAllCasesByLawyer(string lawyerName)
         {
-            return ctx.Cases
-                .Where(c => c.Lawyer.UserName == lawyerUserName)
-                .OrderBy(c => c.Type)
-                .ToList();
+            var clients = ctx.Users.Where(u => u.UserName == lawyerName)
+                 .SelectMany(u => u.Clients);
+
+            return clients.SelectMany(c => c.Cases).ToList();
         }
 
         public Case GetCaseById(int id)

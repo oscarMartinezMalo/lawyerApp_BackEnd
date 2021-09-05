@@ -12,7 +12,6 @@ namespace LawyerApp.Migrations
                                     INSERT INTO [dbo].[AspNetRoles] ([Id], [Name], [NormalizedName], [ConcurrencyStamp]) VALUES (N'a8f95b62-37e2-4de7-8491-1b15d7718346', N'Admin', N'ADMIN', N'a234f853-66d2-4bf6-af58-52b72f88844a')
 
                                     INSERT INTO [dbo].[AspNetUserRoles] ([UserId], [RoleId]) VALUES (N'daa8c846-6344-45c6-acb7-9bf496362ed3', N'a8f95b62-37e2-4de7-8491-1b15d7718346')
-
                                 ");
         }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace LawyerApp.Data.Entities
 {
@@ -6,5 +7,6 @@ namespace LawyerApp.Data.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public ICollection<Client> Clients { get; set; }
     }
 }

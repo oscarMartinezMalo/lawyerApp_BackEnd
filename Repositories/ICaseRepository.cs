@@ -6,7 +6,7 @@ namespace LawyerApp.Repositories
     public interface ICaseRepository
     {
         IEnumerable<Case> GetAllCases();
-        IEnumerable<Case> GetAllCasesByUserName(string lawyerUserName);
+        IEnumerable<Case> GetAllCasesByLawyer(string clientName);
         Case GetCaseById(int id);
         IEnumerable<Case> GetCasesByType(string type);
 
