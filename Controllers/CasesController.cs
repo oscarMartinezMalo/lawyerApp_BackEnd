@@ -20,18 +20,15 @@ namespace LawyerApp.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CasesController : ControllerBase
     {
-        //private readonly ICaseRepository repository;
         private readonly IUnitOfWork unitOfWork;
         private readonly ILogger<CasesController> logger;
         private readonly IMapper mapper;
 
         public CasesController(
-            //ICaseRepository caseRepository,
             IUnitOfWork unitOfWork,
             ILogger<CasesController> logger,
             IMapper mapper)
         {
-            //this.repository = caseRepository;
             this.unitOfWork = unitOfWork;
             this.logger = logger;
             this.mapper = mapper;
@@ -64,7 +61,6 @@ namespace LawyerApp.Controllers
             try
             {
                 var oneCase = unitOfWork.Cases.GetCaseById(id);
-                //var oneCase = repository.GetCaseById(id);
 
                 if (oneCase != null) { return Ok(mapper.Map<Case, CaseDto>(oneCase)); }
                 else { return NotFound(); }
@@ -87,8 +83,6 @@ namespace LawyerApp.Controllers
                     var newCase = mapper.Map<CaseDto, Case>(model);
 
                     unitOfWork.AddEntity(newCase);
-                    //repository.AddEntity(newCase);
-                    //if (repository.SaveAll())
                     if (unitOfWork.Complete())
                     {
                         return Created($"/api/orders/{newCase.Id}", mapper.Map<Case, CaseDto>(newCase));
