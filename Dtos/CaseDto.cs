@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LawyerApp.Data.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace LawyerApp.ViewModels
@@ -14,5 +15,6 @@ namespace LawyerApp.ViewModels
         public DateTime CreatedDate { get; set; }
         [Required]
         public int ClientId { get; set; }
+        public ClientDto Client { get; set; }
     }
 }

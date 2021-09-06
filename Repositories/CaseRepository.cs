@@ -27,7 +27,9 @@ namespace LawyerApp.Repositories
             var clients = ctx.Users.Where(u => u.UserName == lawyerName)
                  .SelectMany(u => u.Clients);
 
-            return clients.SelectMany(c => c.Cases).ToList();
+            return clients.SelectMany(c => c.Cases)
+                .Include(c => c.Client)
+                .ToList();
         }
 
         public Case GetCaseById(int id)

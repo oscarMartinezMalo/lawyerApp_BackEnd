@@ -20,6 +20,5 @@ namespace LawyerApp.ViewModels
         public string Phone { get; set; }
         [Required]
         public string LawyerId { get; set; }
-        public ICollection<CaseDto> Cases { get; set; }
     }
 }

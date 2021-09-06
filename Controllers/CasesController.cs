@@ -38,13 +38,13 @@ namespace LawyerApp.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [Authorize]
         public ActionResult<IEnumerable<Case>> Get()
         {
             try
             {
                 var lawyerUser = User.Identity.Name;
 
-                //return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(repository.GetAllCasesByUserName(lawyerUser)));
                 return Ok(mapper.Map<IEnumerable<Case>, IEnumerable<CaseDto>>(unitOfWork.Cases.GetAllCasesByLawyer(lawyerUser)));
             }
             catch (Exception ex)
