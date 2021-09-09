@@ -2,6 +2,8 @@
 using LawyerApp.Data.Entities;
 using LawyerApp.Persistent;
 using LawyerApp.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,6 +16,7 @@ namespace LawyerApp.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Produces("application/json")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ClientsController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
@@ -101,9 +104,12 @@ namespace LawyerApp.Controllers
 
         [HttpGet]
         [ActionName("getClientsByQuery")]
+        [Authorize]
         public IEnumerable<Client> GetClients(string query = null)
         {
-            var clientsQuery = unitOfWork.Clients.GetClients(query);
+            var lawyerUserName = User.Identity.Name;
+
+            var clientsQuery = unitOfWork.Clients.GetClients(query, lawyerUserName);
             return clientsQuery;
         }
 

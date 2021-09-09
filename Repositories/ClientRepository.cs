@@ -58,14 +58,17 @@ namespace LawyerApp.Repositories
                 .FirstOrDefault();
         }
 
-        public IEnumerable<Client> GetClients(string query)
+        public IEnumerable<Client> GetClients(string query, string lawyerUserName)
         {
-          var clientsQuery = ctx.Clients.AsQueryable();
+            var clientsQuery = new List<Client>();
 
             if (!String.IsNullOrWhiteSpace(query))
-                clientsQuery = clientsQuery.Where(c => c.FirstName.Contains(query));
+            {
+                clientsQuery = ctx.Clients.Where(c => c.Lawyer.UserName == lawyerUserName && 
+                                                (c.FirstName + ' ' + c.LastName).Contains(query)).ToList();
+            }
 
-            return clientsQuery.ToList();
+            return clientsQuery;
         }
 
         public void AddEntity(object model)

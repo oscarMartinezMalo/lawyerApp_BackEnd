@@ -74,12 +74,16 @@ namespace LawyerApp.Controllers
 
         // POST api/<CasesController>
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] CaseDto model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    var lawyerUser = User.Identity.Name;
+
+                    model.CreatedDate = DateTime.Now;
                     var newCase = mapper.Map<CaseDto, Case>(model);
 
                     unitOfWork.AddEntity(newCase);
