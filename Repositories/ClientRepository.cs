@@ -1,6 +1,7 @@
 ﻿using LawyerApp.Data;
 using LawyerApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -55,6 +56,16 @@ namespace LawyerApp.Repositories
                 .Include(cl => cl.Cases)
                 .Where(cl => cl.Id == id)
                 .FirstOrDefault();
+        }
+
+        public IEnumerable<Client> GetClients(string query)
+        {
+          var clientsQuery = ctx.Clients.AsQueryable();
+
+            if (!String.IsNullOrWhiteSpace(query))
+                clientsQuery = clientsQuery.Where(c => c.FirstName.Contains(query));
+
+            return clientsQuery.ToList();
         }
 
         public void AddEntity(object model)

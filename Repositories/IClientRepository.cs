@@ -10,6 +10,7 @@ namespace LawyerApp.Repositories
         IEnumerable<Client> GetAllClients(bool includesCases);
         Client GetClientById(int id);
         IEnumerable<Client> GetClientsByFirstName(string firstName);
+        IEnumerable<Client> GetClients(string query);
         bool SaveAll();
     }
 }

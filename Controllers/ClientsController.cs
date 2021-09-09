@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace LawyerApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     [Produces("application/json")]
     public class ClientsController : ControllerBase
@@ -34,6 +34,7 @@ namespace LawyerApp.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ActionName("getAllClients")]
         public ActionResult<IEnumerable<Client>> Get(bool includesCases = true)
         {
             try
@@ -50,6 +51,7 @@ namespace LawyerApp.Controllers
 
         // GET api/<ClientsController>/5
         [HttpGet("{id}")]
+        [ActionName("getClientById")]
         public IActionResult Get(int id)
         {
             try
@@ -68,6 +70,7 @@ namespace LawyerApp.Controllers
 
         // POST api/<ClientsController>
         [HttpPost]
+        [ActionName("saveClient")]
         public IActionResult Post([FromBody] ClientDto model)
         {
             try
@@ -94,6 +97,14 @@ namespace LawyerApp.Controllers
 
             return BadRequest("Failed to save Client");
 
+        }
+
+        [HttpGet]
+        [ActionName("getClientsByQuery")]
+        public IEnumerable<Client> GetClients(string query = null)
+        {
+            var clientsQuery = unitOfWork.Clients.GetClients(query);
+            return clientsQuery;
         }
 
         //// PUT api/<ClientsController>/5
