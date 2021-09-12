@@ -112,9 +112,25 @@ namespace LawyerApp.Controllers
         //}
 
         //// DELETE api/<CasesController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        [HttpDelete("{id}")]
+        [Authorize]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                Case caseToDelete = this.unitOfWork.Cases.FindCaseById(id, User.Identity.Name);
+                if (caseToDelete == null) return NotFound();
+
+                this.unitOfWork.Cases.Delete(caseToDelete);
+
+                if (unitOfWork.Complete()) return Ok();
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+
+            return BadRequest("Failed to delete Case");
+        }
     }
 }

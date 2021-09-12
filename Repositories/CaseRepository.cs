@@ -48,6 +48,22 @@ namespace LawyerApp.Repositories
                  .ToList();
         }
 
+        public Case FindCaseById(int id, string lawyerName)
+        {
+            // Get all cases that belongs to this layer
+            var allCasesOfLawyer = ctx.Users.Where(u => u.UserName == lawyerName)
+                 .SelectMany(u => u.Clients).SelectMany(c => c.Cases)
+                .Include(c => c.Client);
+
+            // Check if this layer has a case with this Id
+            return allCasesOfLawyer.FirstOrDefault(c => c.Id == id);
+        }
+
+        public void Delete(Case caseToDelete)
+        {
+            ctx.Cases.Remove(caseToDelete);
+        }
+
         public void AddEntity(object model)
         {
             ctx.Add(model);
