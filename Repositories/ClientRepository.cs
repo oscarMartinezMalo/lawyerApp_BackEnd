@@ -39,7 +39,6 @@ namespace LawyerApp.Repositories
                     .OrderBy(cl => cl.FirstName)
                     .ToList();
             }
-
         }
 
         public IEnumerable<Client> GetClientsByFirstName(string firstName)
@@ -69,6 +68,37 @@ namespace LawyerApp.Repositories
             }
 
             return clientsQuery;
+        }
+
+        public IEnumerable<Client> GetAllClientsByLawyerUser(bool includesCases, string lawyerUserName)
+        {
+            if (includesCases)
+            {
+                return ctx.Clients
+                    .Where(c => c.Lawyer.UserName == lawyerUserName)
+                    .OrderBy(cl => cl.FirstName)
+                    .Include(cl => cl.Cases)
+                    .ToList();
+            }
+            else
+            {
+                return ctx.Clients
+                    .Where(c => c.Lawyer.UserName == lawyerUserName)
+                    .OrderBy(cl => cl.FirstName)
+                    .ToList();
+            }
+        }
+
+
+        public Client FindClientById(int id, string lawyerName)
+        {
+             return ctx.Clients.
+                FirstOrDefault(c => c.Lawyer.UserName == lawyerName && c.Id == id);
+        }
+
+        public void Delete(Client clientToDelete)
+        {
+            ctx.Clients.Remove(clientToDelete);
         }
 
         public void AddEntity(object model)

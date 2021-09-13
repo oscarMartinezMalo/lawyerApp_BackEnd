@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -34,15 +35,37 @@ namespace LawyerApp.Controllers
         }
 
         // GET: api/<ClientsController>
+        //[HttpGet]
+        //[ProducesResponseType(200)]
+        //[ProducesResponseType(400)]
+        //[ActionName("getAllClients")]
+        //public ActionResult<IEnumerable<Client>> Get(bool includesCases = true)
+        //{
+        //    try
+        //    {
+        //        var results = unitOfWork.Clients.GetAllClients(includesCases);
+        //        return Ok(mapper.Map<IEnumerable<Client>, IEnumerable<ClientDto>>(results));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.LogError($"Failed to get Clients: {ex}");
+        //        return BadRequest("Failed to get Clients");
+        //    }
+        //}
+
+        // GET: api/<ClientsController>
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [ActionName("getAllClients")]
+        [ActionName("getAllClientsOfaLawyer")]
+        [Authorize]
         public ActionResult<IEnumerable<Client>> Get(bool includesCases = true)
         {
             try
             {
-                var results = unitOfWork.Clients.GetAllClients(includesCases);
+                var lawyerUserName = User.Identity.Name;
+
+                var results = unitOfWork.Clients.GetAllClientsByLawyerUser(includesCases, lawyerUserName);
                 return Ok(mapper.Map<IEnumerable<Client>, IEnumerable<ClientDto>>(results));
             }
             catch (Exception ex)
@@ -119,10 +142,27 @@ namespace LawyerApp.Controllers
         //{
         //}
 
-        //// DELETE api/<ClientsController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // DELETE api/<ClientsController>/5
+        [HttpDelete("{id}")]
+        [ActionName("delete")]
+        [Authorize]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                Client clientToDelete = this.unitOfWork.Clients.FindClientById(id, User.Identity.Name);
+                if (clientToDelete == null) return NotFound();
+
+                this.unitOfWork.Clients.Delete(clientToDelete);
+
+                if (unitOfWork.Complete()) return Ok();
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+
+            return BadRequest("Failed to delete Case");
+        }
     }
 }
