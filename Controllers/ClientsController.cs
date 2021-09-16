@@ -4,11 +4,13 @@ using LawyerApp.Persistent;
 using LawyerApp.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,14 +25,17 @@ namespace LawyerApp.Controllers
         private readonly IUnitOfWork unitOfWork;
         private readonly ILogger<CasesController> logger;
         private readonly IMapper mapper;
+        private readonly UserManager<LawyerUser> userManager;
 
         public ClientsController(
             IUnitOfWork unitOfWork,
             ILogger<CasesController> logger,
-            IMapper mapper)
+            IMapper mapper, 
+            UserManager<LawyerUser> userManager)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            this.userManager = userManager;
             this.logger = logger;
         }
 
@@ -97,12 +102,17 @@ namespace LawyerApp.Controllers
         // POST api/<ClientsController>
         [HttpPost]
         [ActionName("saveClient")]
-        public IActionResult Post([FromBody] ClientDto model)
+        [Authorize]
+        public async Task<IActionResult> PostAsync([FromBody] ClientDto model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    // Set the userId in the clientDTO
+                    LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
+                    model.LawyerId = user.Id;
+
                     var newClient = mapper.Map<ClientDto, Client>(model);
 
                     unitOfWork.AddEntity(newClient);
@@ -136,11 +146,29 @@ namespace LawyerApp.Controllers
             return clientsQuery;
         }
 
-        //// PUT api/<ClientsController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT api/<ClientsController>/5
+        [HttpPut("{id}")]
+        [ActionName("updateClient")]
+        [Authorize]
+        public async Task<ActionResult<ClientDto>> PutAsync(int id, [FromBody] ClientDto model)
+        {
+            Client clientToUpdate = this.unitOfWork.Clients.FindClientById(id, User.Identity.Name);
+
+            if (clientToUpdate == null) return NotFound("Couldn't find the Client");
+
+            this.mapper.Map(model, clientToUpdate);     // Map everything from ClientDto in to Client
+
+            // Set the userId in the client to update
+            LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
+            clientToUpdate.LawyerId = user.Id;
+
+            if (unitOfWork.Complete())
+            {
+                return this.mapper.Map<ClientDto>(clientToUpdate);
+            }
+
+            return BadRequest("Failed to Update Client");
+        }
 
         // DELETE api/<ClientsController>/5
         [HttpDelete("{id}")]
