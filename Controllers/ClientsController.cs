@@ -63,7 +63,6 @@ namespace LawyerApp.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ActionName("getAllClientsOfaLawyer")]
-        [Authorize]
         public ActionResult<IEnumerable<Client>> Get(bool includesCases = true)
         {
             try
@@ -102,7 +101,6 @@ namespace LawyerApp.Controllers
         // POST api/<ClientsController>
         [HttpPost]
         [ActionName("saveClient")]
-        [Authorize]
         public async Task<IActionResult> PostAsync([FromBody] ClientDto model)
         {
             try
@@ -132,12 +130,10 @@ namespace LawyerApp.Controllers
             }
 
             return BadRequest("Failed to save Client");
-
         }
 
         [HttpGet]
         [ActionName("getClientsByQuery")]
-        [Authorize]
         public IEnumerable<Client> GetClients(string query = null)
         {
             var lawyerUserName = User.Identity.Name;
@@ -149,7 +145,6 @@ namespace LawyerApp.Controllers
         // PUT api/<ClientsController>/5
         [HttpPut("{id}")]
         [ActionName("updateClient")]
-        [Authorize]
         public async Task<ActionResult<ClientDto>> PutAsync(int id, [FromBody] ClientDto model)
         {
             Client clientToUpdate = this.unitOfWork.Clients.FindClientById(id, User.Identity.Name);
@@ -173,7 +168,6 @@ namespace LawyerApp.Controllers
         // DELETE api/<ClientsController>/5
         [HttpDelete("{id}")]
         [ActionName("delete")]
-        [Authorize]
         public IActionResult Delete(int id)
         {
             try

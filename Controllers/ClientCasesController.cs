@@ -2,6 +2,8 @@
 using LawyerApp.Data.Entities;
 using LawyerApp.Persistent;
 using LawyerApp.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,7 @@ namespace LawyerApp.Controllers
 {
     [Route("api/clients/{cliendid}/cases")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ClientCasesController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;

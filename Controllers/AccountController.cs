@@ -78,7 +78,7 @@ namespace LawyerApp.Controllers
                             config["Tokens:Issuer"],
                             config["Tokens:Audience"],
                             claims,
-                            expires: DateTime.UtcNow.AddMinutes(30),
+                            expires: DateTime.UtcNow.AddMinutes(1),
                             signingCredentials: creds
                             );
 
@@ -194,8 +194,29 @@ namespace LawyerApp.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
 
+        [HttpPost]
+        [ActionName("changePassword")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> changePassword([FromBody] ChangePasswordDto model)
+        {
+            try
+            {
+                if (model.newPassword != model.retypePassword) return BadRequest("New Password and RetypePassword dont match");
 
+                var user = await userManager.FindByNameAsync(User.Identity.Name);
+                if (user == null) return BadRequest();
+
+                var result = await userManager.ChangePasswordAsync(user, model.currentPassword, model.newPassword);
+                if (!result.Succeeded) return BadRequest(result);
+
+                return Ok(new { message = "Password successfully changed" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

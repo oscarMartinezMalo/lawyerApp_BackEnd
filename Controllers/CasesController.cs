@@ -38,7 +38,6 @@ namespace LawyerApp.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [Authorize]
         public ActionResult<IEnumerable<Case>> Get()
         {
             try
@@ -74,7 +73,6 @@ namespace LawyerApp.Controllers
 
         // POST api/<CasesController>
         [HttpPost]
-        [Authorize]
         public IActionResult Post([FromBody] CaseDto model)
         {
             try
@@ -113,7 +111,6 @@ namespace LawyerApp.Controllers
 
         //// DELETE api/<CasesController>/5
         [HttpDelete("{id}")]
-        [Authorize]
         public IActionResult Delete(int id)
         {
             try
