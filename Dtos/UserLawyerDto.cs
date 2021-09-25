@@ -2,7 +2,7 @@
 
 namespace LawyerApp.ViewModels
 {
-    public class LoginResponseDto
+    public class UserLawyerDto
     {
         [Required]
         public string Id { get; set; }
@@ -12,7 +12,5 @@ namespace LawyerApp.ViewModels
         public string LastName { get; set; }
         [Required]
         public string Email { get; set; }
-        [Required]
-        public string Role { get; set; }
     }
 }

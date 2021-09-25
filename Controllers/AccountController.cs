@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LawyerApp.Data.Entities;
+using LawyerApp.Dtos;
 using LawyerApp.Services;
 using LawyerApp.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,7 +12,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,13 +66,20 @@ namespace LawyerApp.Controllers
                     if (result.Succeeded)
                     {
                         // Create the Token
-                        var claims = new[]
+                        var claims = new List<Claim>
                         {
                             new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                             new Claim(JwtRegisteredClaimNames.Jti, new Guid().ToString()),
                             new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
                         };
 
+                        // Add the Roles of the user to the token claims
+                        var userRoles = await this.GetUserRoles(user, roleManager, userManager);
+                        foreach (var role in userRoles)
+                        {                            
+                            claims.Add(new Claim(ClaimTypes.Role, role));
+                        }
+                        ////
 
                         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Tokens:key"]));
                         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -86,6 +96,7 @@ namespace LawyerApp.Controllers
                         {
                             id = user.Id,
                             firstName = user.FirstName,
+                            lastName = user.LastName,
                             email = user.Email,
                             role = "NotSetYet",
                             accessToken = new JwtSecurityTokenHandler().WriteToken(token),
@@ -160,7 +171,13 @@ namespace LawyerApp.Controllers
         public async Task<IActionResult> GetUserByToken()
         {
             var userAccount = await userManager.FindByNameAsync(User.Identity.Name);
+
             var user = mapper.Map<LawyerUser, LoginResponseDto>(userAccount);
+
+            // Set the role from this User
+            var userRoles = await this.GetUserRoles(userAccount, roleManager, userManager);
+            userRoles.ForEach(role => user.Role = role);
+
             return Ok(user);
         }
 
@@ -199,7 +216,7 @@ namespace LawyerApp.Controllers
         [HttpPost]
         [ActionName("changePassword")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> changePassword([FromBody] ChangePasswordDto model)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
         {
             try
             {
@@ -217,6 +234,149 @@ namespace LawyerApp.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost]
+        [ActionName("updateProfile")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto model)
+        {
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Email = model.Email;
+            user.UserName = model.Email;
+
+            var result = await userManager.UpdateAsync(user);
+            if(result.Succeeded) {
+                return Created("User Profile was successfully updated", user);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpGet]
+        [ActionName("roles")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<IEnumerable<Case>> Get()
+        {
+            try
+            {
+                var roles = roleManager.Roles;
+                return Ok(roles);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to get Roles: {ex}");
+                return BadRequest("Failed to get Roles");
+            }
+        }
+
+        [HttpPost]
+        [ActionName("addRole")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddRole([FromBody] RoleDto role)
+        {
+            try
+            {
+                IdentityRole identityRole = new IdentityRole { Name = role.name };
+                IdentityResult result = await roleManager.CreateAsync(identityRole);
+
+
+
+                if (result.Succeeded) {
+                    IdentityRole newIdentityRole = await roleManager.FindByNameAsync(role.name);
+                    return Created("Role was created successfully", newIdentityRole);
+                }
+
+                return BadRequest("Failed to create Roles");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to create Roles: {ex}");
+                return BadRequest("Failed to create Roles");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ActionName("deleteRole")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteRole(string id)
+        {
+            try
+            {
+               var roleToDelete = await roleManager.FindByIdAsync(id);
+               var result =  await roleManager.DeleteAsync(roleToDelete);
+               if (result.Succeeded) return Ok();
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+
+            return BadRequest("Failed to delete Case");
+        }
+
+        [HttpGet]
+        [ActionName("users")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<IEnumerable<UserLawyerDto>> GetAllUsers()
+        {
+            try
+            {
+                var users = userManager.Users;
+                var userList = mapper.Map<IEnumerable<LawyerUser>, IEnumerable<UserLawyerDto>>(users);
+                return Ok(userList);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Get Users failed: {ex}");
+                return BadRequest("Failed to get Users");
+            }
+
+        }
+
+        [HttpDelete("{id}")]
+        [ActionName("deleteUser")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUserById(string id)
+        {
+            try
+            {
+                var userToDelete = await userManager.FindByIdAsync(id);
+                var result = await userManager.DeleteAsync(userToDelete);
+                if (result.Succeeded) return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("User was not deleted",ex);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+
+            return BadRequest("Failed to delete User, this user may have some clients associated");
+        }
+
+
+        ////
+        // Get the Roles from an User
+        private async Task<List<string>> GetUserRoles(LawyerUser user, RoleManager<IdentityRole> roleManager, UserManager<LawyerUser> userManager)
+        {
+            var listRoles = new List<string>();
+            foreach (var role in roleManager.Roles)
+            {
+                if (await userManager.IsInRoleAsync(user, role.Name))
+                {
+                    listRoles.Add(role.Name);
+                }
+            }
+
+            return listRoles;
         }
     }
 }
