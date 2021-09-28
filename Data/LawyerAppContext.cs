@@ -1,6 +1,7 @@
 ﻿using LawyerApp.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace LawyerApp.Data
 {
@@ -25,6 +26,11 @@ namespace LawyerApp.Data
                     Phone = "786-789-8976",
                     Address = "5ta entre B y C",
                 });
+
+            foreach (var foreignKey in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+            }
         }
     }
 }

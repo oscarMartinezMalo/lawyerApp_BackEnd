@@ -313,8 +313,9 @@ namespace LawyerApp.Controllers
                var result =  await roleManager.DeleteAsync(roleToDelete);
                if (result.Succeeded) return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError("Role was not deleted", ex);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
 
@@ -362,6 +363,30 @@ namespace LawyerApp.Controllers
             return BadRequest("Failed to delete User, this user may have some clients associated");
         }
 
+        
+        [HttpGet("{roleId}")]
+        [ActionName("getRoleById")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetRoleById(string roleId)
+        {
+            var role = await roleManager.FindByIdAsync(roleId);
+            if ( role != null)
+            {
+                    return Ok(role);
+            }
+            return NotFound();
+        }
+
+
+        [HttpPut("{id}")]
+        [ActionName("updateRole")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateRole(int id, [FromBody] RoleDto model)
+        {
+            return BadRequest("Failed to Update Client");
+        }
 
         ////
         // Get the Roles from an User
