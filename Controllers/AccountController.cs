@@ -282,13 +282,13 @@ namespace LawyerApp.Controllers
         {
             try
             {
-                IdentityRole identityRole = new IdentityRole { Name = role.name };
+                IdentityRole identityRole = new IdentityRole { Name = role.Name };
                 IdentityResult result = await roleManager.CreateAsync(identityRole);
 
 
 
                 if (result.Succeeded) {
-                    IdentityRole newIdentityRole = await roleManager.FindByNameAsync(role.name);
+                    IdentityRole newIdentityRole = await roleManager.FindByNameAsync(role.Name);
                     return Created("Role was created successfully", newIdentityRole);
                 }
 
@@ -364,30 +364,118 @@ namespace LawyerApp.Controllers
         }
 
         
-        [HttpGet("{roleId}")]
-        [ActionName("getRoleById")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetRoleById(string roleId)
-        {
-            var role = await roleManager.FindByIdAsync(roleId);
-            if ( role != null)
-            {
-                    return Ok(role);
-            }
-            return NotFound();
-        }
+        //[HttpGet("{roleId}")]
+        //[ActionName("getRoleById")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(Roles = "Admin")]
+        //public async Task<IActionResult> GetRoleById(string roleId)
+        //{
+        //    var role = await roleManager.FindByIdAsync(roleId);
+        //    if ( role != null)
+        //    {
+        //            return Ok(role);
+        //    }
+        //    return NotFound();
+        //}
 
 
         [HttpPut("{id}")]
         [ActionName("updateRole")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateRole(int id, [FromBody] RoleDto model)
+        public async Task<IActionResult> UpdateRole(string id, [FromBody] RoleDto model)
         {
-            return BadRequest("Failed to Update Client");
+            try
+            {
+                var role = await roleManager.FindByIdAsync(id);
+                if (role == null) return BadRequest("Failed to Update Client");
+
+                role.Name = model.Name;
+                var result = await roleManager.UpdateAsync(role);
+
+                if (result.Succeeded) return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Role was not updated", ex);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+
+            return BadRequest("Something went wrong, role was not updated");
         }
 
+        [HttpGet("{id}")]
+        [ActionName("getRoleById")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetRoleById(string id, bool includesUsers = true)
+        {
+            var role = await roleManager.FindByIdAsync(id);
+
+            if(role == null) return BadRequest("Failed to Update Client");
+
+            var roleModel = new RoleDto
+            {
+                Id = role.Id,
+                Name = role.Name
+            };
+
+            // Add the users that belong to that role.
+            if (includesUsers)
+            {
+                roleModel.Users = new List<LoginResponseDto>();
+
+                foreach (var user in userManager.Users)
+                {
+                    if (await userManager.IsInRoleAsync(user, role.Name))
+                    {
+                        roleModel.Users.Add(mapper.Map<LawyerUser, LoginResponseDto>(user));
+                    }
+                }
+            }
+
+            return Ok(roleModel);
+        }
+
+
+        [HttpPost()]
+        [ActionName("deleteUserfromRole")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> deleteUserfromRole([FromBody] UserIdRoleIdDto model)
+        {
+            try
+            {
+                var role = await roleManager.FindByIdAsync(model.roleId);
+                if (role == null) return BadRequest("Role not found");
+
+                var user = await userManager.FindByIdAsync(model.userId);
+                if (user == null) return BadRequest("User not found");
+
+                IdentityResult result = await userManager.RemoveFromRoleAsync(user, role.Name);
+
+                if (result.Succeeded) return Ok(model);
+
+                return BadRequest("User was not deleted from this role");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to get Clients: {ex}");
+                return BadRequest("Failed to get Clients");
+            }
+
+
+        }
+
+        [HttpPost()]
+        [ActionName("addUserToRole")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> addUserToRole([FromBody] UserIdRoleIdDto model)
+        {
+            var test = model.userId;
+            return BadRequest();
+        }
         ////
         // Get the Roles from an User
         private async Task<List<string>> GetUserRoles(LawyerUser user, RoleManager<IdentityRole> roleManager, UserManager<LawyerUser> userManager)

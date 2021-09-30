@@ -1,11 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace LawyerApp.ViewModels
 {
     public class RoleDto
     {
-        public string id { get; set; }
         [Required]
-        public string name { get; set; }
+        public string Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+
+        public List<LoginResponseDto> Users { get; set; }
     }
 }
