@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -74,7 +75,8 @@ namespace LawyerApp.Controllers
                         };
 
                         // Add the Roles of the user to the token claims
-                        var userRoles = await this.GetUserRoles(user, roleManager, userManager);
+                        //var userRoles = await this.GetUserRoles(user);
+                        var userRoles = await userManager.GetRolesAsync(user);
                         foreach (var role in userRoles)
                         {                            
                             claims.Add(new Claim(ClaimTypes.Role, role));
@@ -88,7 +90,7 @@ namespace LawyerApp.Controllers
                             config["Tokens:Issuer"],
                             config["Tokens:Audience"],
                             claims,
-                            expires: DateTime.UtcNow.AddMinutes(1),
+                            expires: DateTime.UtcNow.AddMinutes(30),
                             signingCredentials: creds
                             );
 
@@ -165,6 +167,22 @@ namespace LawyerApp.Controllers
             return Ok(new { message = "A reset link was sent to your Email" });
         }
 
+        //[HttpGet]
+        //[ActionName("getUser")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //public async Task<IActionResult> GetUserByToken()
+        //{
+        //    var userAccount = await userManager.FindByNameAsync(User.Identity.Name);
+
+        //    var user = mapper.Map<LawyerUser, LoginResponseDto>(userAccount);
+
+        //    var userRoles = await userManager.GetRolesAsync(userAccount);
+
+        //    user.Roles = userRoles;
+
+        //    return Ok(user);
+        //}
+
         [HttpGet]
         [ActionName("getUser")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -172,13 +190,26 @@ namespace LawyerApp.Controllers
         {
             var userAccount = await userManager.FindByNameAsync(User.Identity.Name);
 
-            var user = mapper.Map<LawyerUser, LoginResponseDto>(userAccount);
+            var user = mapper.Map<LawyerUser, UserDto>(userAccount);
 
-            // Set the role from this User
-            var userRoles = await this.GetUserRoles(userAccount, roleManager, userManager);
-            userRoles.ForEach(role => user.Role = role);
+            var userWithRoles = await this.SetUserRoles(user, userAccount);
 
-            return Ok(user);
+            return Ok(userWithRoles);
+        }
+
+        [HttpGet("{id}")]
+        [ActionName("getUserById")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            var userAccount = await userManager.FindByIdAsync(id);
+
+            var user = mapper.Map<LawyerUser, UserDto>(userAccount);
+            //user.Roles = await userManager.GetRolesAsync(userAccount);
+
+            var userWithRoles = await this.SetUserRoles(user, userAccount);
+
+            return Ok(userWithRoles);
         }
 
         [HttpPost]
@@ -236,12 +267,21 @@ namespace LawyerApp.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [ActionName("updateProfile")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto model)
         {
-            var user = await userManager.FindByNameAsync(User.Identity.Name);
+            LawyerUser user;
+
+            if (model.id != "")
+            {
+                user = await userManager.FindByIdAsync(model.id);
+            }
+            else
+            {
+                user = await userManager.FindByNameAsync(User.Identity.Name);
+            }
 
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
@@ -260,7 +300,7 @@ namespace LawyerApp.Controllers
         [ActionName("roles")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Admin")]
-        public ActionResult<IEnumerable<Case>> Get()
+        public ActionResult<IEnumerable<RoleDto>> GetRoles()
         {
             try
             {
@@ -342,6 +382,26 @@ namespace LawyerApp.Controllers
 
         }
 
+        [HttpGet]
+        [ActionName("getAllUsersByQuery")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<IEnumerable<UserLawyerDto>> GetAllUsersByQuery(string query = null)
+        {
+            try
+            {
+                var users = userManager.Users.Where(u => (u.FirstName + ' ' + u.LastName).Contains(query)).ToList();
+                var userList = mapper.Map<IEnumerable<LawyerUser>, IEnumerable<UserLawyerDto>>(users);
+                return Ok(userList);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Get Users failed: {ex}");
+                return BadRequest("Failed to get Users");
+            }
+
+        }
+
         [HttpDelete("{id}")]
         [ActionName("deleteUser")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -362,22 +422,6 @@ namespace LawyerApp.Controllers
 
             return BadRequest("Failed to delete User, this user may have some clients associated");
         }
-
-        
-        //[HttpGet("{roleId}")]
-        //[ActionName("getRoleById")]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> GetRoleById(string roleId)
-        //{
-        //    var role = await roleManager.FindByIdAsync(roleId);
-        //    if ( role != null)
-        //    {
-        //            return Ok(role);
-        //    }
-        //    return NotFound();
-        //}
-
 
         [HttpPut("{id}")]
         [ActionName("updateRole")]
@@ -437,12 +481,40 @@ namespace LawyerApp.Controllers
             return Ok(roleModel);
         }
 
+        [HttpGet("{id}")]
+        [ActionName("getUser")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUserWithRoles(string id)
+        {
+            try
+            {
+                var userAccount = await userManager.FindByIdAsync(id);
+                var user = mapper.Map<UserDto>(userAccount);
+
+                user.Roles = new List<IdentityRole>();
+                foreach (var role in roleManager.Roles)
+                {
+                    if (await userManager.IsInRoleAsync(userAccount, role.Name))
+                    {
+                        user.Roles.Add(role);
+                    }
+                }
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to get Roles: {ex}");
+                return BadRequest("Failed to get Roles");
+            }
+        }
 
         [HttpPost()]
         [ActionName("deleteUserfromRole")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> deleteUserfromRole([FromBody] UserIdRoleIdDto model)
+        public async Task<IActionResult> DeleteUserfromRole([FromBody] UserIdRoleIdDto model)
         {
             try
             {
@@ -460,8 +532,8 @@ namespace LawyerApp.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError($"Failed to get Clients: {ex}");
-                return BadRequest("Failed to get Clients");
+                logger.LogError($"Failed to get delete: {ex}");
+                return BadRequest("Failed to delete");
             }
 
 
@@ -471,25 +543,42 @@ namespace LawyerApp.Controllers
         [ActionName("addUserToRole")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> addUserToRole([FromBody] UserIdRoleIdDto model)
+        public async Task<IActionResult> AddUserToRole([FromBody] UserIdRoleIdDto model)
         {
-            var test = model.userId;
-            return BadRequest();
-        }
+            try
+            {
+                var role = await roleManager.FindByIdAsync(model.roleId);
+                if (role == null) return BadRequest("Role not found");
+
+                var user = await userManager.FindByIdAsync(model.userId);
+                if (user == null) return BadRequest("User not found");
+
+                IdentityResult result = await userManager.AddToRoleAsync(user, role.Name);
+
+                if (result.Succeeded) return Created("", user);
+
+                return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to get delete: {ex}");
+                return BadRequest("Failed to delete");
+            }
+}
         ////
         // Get the Roles from an User
-        private async Task<List<string>> GetUserRoles(LawyerUser user, RoleManager<IdentityRole> roleManager, UserManager<LawyerUser> userManager)
+        private async Task<UserDto> SetUserRoles(UserDto user, LawyerUser userDb)
         {
-            var listRoles = new List<string>();
+            user.Roles = new List<IdentityRole>();
             foreach (var role in roleManager.Roles)
             {
-                if (await userManager.IsInRoleAsync(user, role.Name))
+                if (await userManager.IsInRoleAsync(userDb, role.Name))
                 {
-                    listRoles.Add(role.Name);
+                    user.Roles.Add(role);
                 }
             }
 
-            return listRoles;
+            return user;
         }
     }
 }

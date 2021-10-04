@@ -13,10 +13,4 @@ namespace LawyerApp.ViewModels
         [Required]
         public string Email { get; set; }
     }
-
-    public class UserIdRoleIdDto
-    {
-        public string roleId { get; set; }
-        public string userId { get; set; }
-    }
 }

@@ -19,6 +19,9 @@ namespace LawyerApp.Data
             CreateMap<LawyerUser, SignupDto>().ReverseMap();
 
             CreateMap<LawyerUser, UserLawyerDto>().ReverseMap();
+
+            CreateMap<LawyerUser, UserDto>().ReverseMap();
+
         }
     }
 }
