@@ -467,13 +467,13 @@ namespace LawyerApp.Controllers
             // Add the users that belong to that role.
             if (includesUsers)
             {
-                roleModel.Users = new List<LoginResponseDto>();
+                roleModel.Users = new List<UserDto>();
 
                 foreach (var user in userManager.Users)
                 {
                     if (await userManager.IsInRoleAsync(user, role.Name))
                     {
-                        roleModel.Users.Add(mapper.Map<LawyerUser, LoginResponseDto>(user));
+                        roleModel.Users.Add(mapper.Map<LawyerUser, UserDto>(user));
                     }
                 }
             }

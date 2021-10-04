@@ -9,6 +9,6 @@ namespace LawyerApp.ViewModels
         [Required]
         public string Name { get; set; }
 
-        public List<LoginResponseDto> Users { get; set; }
+        public List<UserDto> Users { get; set; }
     }
 }

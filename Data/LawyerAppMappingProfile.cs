@@ -14,13 +14,13 @@ namespace LawyerApp.Data
                 .ReverseMap()
                 .ForMember(c => c.Id, opt => opt.Ignore());   // Ignore Id when mapping from Dto to Entity
 
-            CreateMap<LawyerUser, LoginResponseDto>().ReverseMap();
+            CreateMap<LawyerUser, UserDto>().ReverseMap();
 
             CreateMap<LawyerUser, SignupDto>().ReverseMap();
 
             CreateMap<LawyerUser, UserLawyerDto>().ReverseMap();
 
-            CreateMap<LawyerUser, UserDto>().ReverseMap();
+            //CreateMap<LawyerUser, UserDto>().ReverseMap();
 
         }
     }
