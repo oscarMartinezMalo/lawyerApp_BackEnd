@@ -399,8 +399,26 @@ namespace LawyerApp.Controllers
                 logger.LogError($"Get Users failed: {ex}");
                 return BadRequest("Failed to get Users");
             }
-
         }
+
+        [HttpGet]
+        [ActionName("getAllRolesByQuery")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<IEnumerable<UserLawyerDto>> GetAllRolesByQuery(string query = null)
+        {
+            try
+            {
+                var roles = roleManager.Roles.Where(r => (r.Name).Contains(query)).ToList();
+                return Ok(roles);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Get Users failed: {ex}");
+                return BadRequest("Failed to get Users");
+            }
+        }
+
 
         [HttpDelete("{id}")]
         [ActionName("deleteUser")]
@@ -535,8 +553,6 @@ namespace LawyerApp.Controllers
                 logger.LogError($"Failed to get delete: {ex}");
                 return BadRequest("Failed to delete");
             }
-
-
         }
 
         [HttpPost()]
