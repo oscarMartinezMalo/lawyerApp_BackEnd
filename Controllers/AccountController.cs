@@ -580,7 +580,35 @@ namespace LawyerApp.Controllers
                 logger.LogError($"Failed to get delete: {ex}");
                 return BadRequest("Failed to delete");
             }
-}
+        }
+
+
+        [HttpPost()]
+        [ActionName("addRoleToUser")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddRoleToUser([FromBody] UserIdRoleIdDto model)
+        {
+            try
+            {
+                var role = await roleManager.FindByIdAsync(model.roleId);
+                if (role == null) return BadRequest("Role not found");
+
+                var user = await userManager.FindByIdAsync(model.userId);
+                if (user == null) return BadRequest("User not found");
+
+                IdentityResult result = await userManager.AddToRoleAsync(user, role.Name);
+
+                if (result.Succeeded) return Created("", role);
+
+                return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to get delete: {ex}");
+                return BadRequest("Failed to delete");
+            }
+        }
         ////
         // Get the Roles from an User
         private async Task<UserDto> SetUserRoles(UserDto user, LawyerUser userDb)
