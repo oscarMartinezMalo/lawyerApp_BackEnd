@@ -363,6 +363,82 @@ namespace LawyerApp.Controllers
         }
 
         [HttpGet]
+        [ActionName("getAllRolesByQuery")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<IEnumerable<UserLawyerDto>> GetAllRolesByQuery(string query = null)
+        {
+            try
+            {
+                var roles = roleManager.Roles.Where(r => (r.Name).Contains(query)).ToList();
+                return Ok(roles);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Get Users failed: {ex}");
+                return BadRequest("Failed to get Users");
+            }
+        }
+
+        [HttpPut("{id}")]
+        [ActionName("updateRole")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateRole(string id, [FromBody] RoleDto model)
+        {
+            try
+            {
+                var role = await roleManager.FindByIdAsync(id);
+                if (role == null) return BadRequest("Failed to Update Client");
+
+                role.Name = model.Name;
+                var result = await roleManager.UpdateAsync(role);
+
+                if (result.Succeeded) return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Role was not updated", ex);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+
+            return BadRequest("Something went wrong, role was not updated");
+        }
+
+        [HttpGet("{id}")]
+        [ActionName("getRoleById")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetRoleById(string id, bool includesUsers = true)
+        {
+            var role = await roleManager.FindByIdAsync(id);
+
+            if (role == null) return BadRequest("Failed to Update Client");
+
+            var roleModel = new RoleDto
+            {
+                Id = role.Id,
+                Name = role.Name
+            };
+
+            // Add the users that belong to that role.
+            if (includesUsers)
+            {
+                roleModel.Users = new List<UserDto>();
+
+                foreach (var user in userManager.Users)
+                {
+                    if (await userManager.IsInRoleAsync(user, role.Name))
+                    {
+                        roleModel.Users.Add(mapper.Map<LawyerUser, UserDto>(user));
+                    }
+                }
+            }
+
+            return Ok(roleModel);
+        }
+
+        [HttpGet]
         [ActionName("users")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Admin")]
@@ -401,25 +477,6 @@ namespace LawyerApp.Controllers
             }
         }
 
-        [HttpGet]
-        [ActionName("getAllRolesByQuery")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Admin")]
-        public ActionResult<IEnumerable<UserLawyerDto>> GetAllRolesByQuery(string query = null)
-        {
-            try
-            {
-                var roles = roleManager.Roles.Where(r => (r.Name).Contains(query)).ToList();
-                return Ok(roles);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Get Users failed: {ex}");
-                return BadRequest("Failed to get Users");
-            }
-        }
-
-
         [HttpDelete("{id}")]
         [ActionName("deleteUser")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -439,64 +496,6 @@ namespace LawyerApp.Controllers
             }
 
             return BadRequest("Failed to delete User, this user may have some clients associated");
-        }
-
-        [HttpPut("{id}")]
-        [ActionName("updateRole")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateRole(string id, [FromBody] RoleDto model)
-        {
-            try
-            {
-                var role = await roleManager.FindByIdAsync(id);
-                if (role == null) return BadRequest("Failed to Update Client");
-
-                role.Name = model.Name;
-                var result = await roleManager.UpdateAsync(role);
-
-                if (result.Succeeded) return Ok();
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("Role was not updated", ex);
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-
-            return BadRequest("Something went wrong, role was not updated");
-        }
-
-        [HttpGet("{id}")]
-        [ActionName("getRoleById")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetRoleById(string id, bool includesUsers = true)
-        {
-            var role = await roleManager.FindByIdAsync(id);
-
-            if(role == null) return BadRequest("Failed to Update Client");
-
-            var roleModel = new RoleDto
-            {
-                Id = role.Id,
-                Name = role.Name
-            };
-
-            // Add the users that belong to that role.
-            if (includesUsers)
-            {
-                roleModel.Users = new List<UserDto>();
-
-                foreach (var user in userManager.Users)
-                {
-                    if (await userManager.IsInRoleAsync(user, role.Name))
-                    {
-                        roleModel.Users.Add(mapper.Map<LawyerUser, UserDto>(user));
-                    }
-                }
-            }
-
-            return Ok(roleModel);
         }
 
         [HttpGet("{id}")]
@@ -581,7 +580,6 @@ namespace LawyerApp.Controllers
                 return BadRequest("Failed to delete");
             }
         }
-
 
         [HttpPost()]
         [ActionName("addRoleToUser")]

@@ -20,6 +20,7 @@ namespace LawyerApp.Controllers
     [ApiController]
     [Produces("application/json")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "Admin,Lawyer")]
     public class ClientsController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;

@@ -15,6 +15,7 @@ namespace LawyerApp.Controllers
     [Route("api/clients/{cliendid}/cases")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "Admin,Lawyer")]
     public class ClientCasesController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
