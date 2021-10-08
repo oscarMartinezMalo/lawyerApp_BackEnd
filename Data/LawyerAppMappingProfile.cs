@@ -8,7 +8,10 @@ namespace LawyerApp.Data
     {
         public LawyerAppMappingProfile()
         {
-            CreateMap<Case, CaseDto>().ReverseMap();
+            CreateMap<Case, CaseDto>()
+                .ReverseMap()
+                .ForMember(c => c.Id, opt => opt.Ignore()) // Ignore Id when mapping from Dto to Entity
+                .ForMember(c => c.Client, opt => opt.Ignore()); // Ignore Client when mapping from Dto to Entity
 
             CreateMap<Client, ClientDto>()
                 .ReverseMap()

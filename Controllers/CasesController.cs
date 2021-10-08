@@ -104,6 +104,31 @@ namespace LawyerApp.Controllers
             return BadRequest("Failed to save Case");
         }
 
+        // POST api/<CasesController>
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] CaseDto caseResource)
+        {
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+
+                var caseToEdit = unitOfWork.Cases.GetCaseById(id);
+
+                mapper.Map<CaseDto, Case>(caseResource, caseToEdit);
+
+                if (unitOfWork.Complete())
+                {
+                    return Ok(mapper.Map<Case, CaseDto>(caseToEdit));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to save new Case: {ex}");
+            }
+
+            return BadRequest("Failed to save Case");
+        }
         //// PUT api/<CasesController>/5
         //[HttpPut("{id}")]
         //public void Put(int id, [FromBody] string value)
