@@ -160,7 +160,7 @@ namespace LawyerApp.Controllers
 
             if (unitOfWork.Complete())
             {
-                return this.mapper.Map<ClientDto>(clientToUpdate);
+                return Ok(this.mapper.Map<ClientDto>(clientToUpdate));
             }
 
             return BadRequest("Failed to Update Client");

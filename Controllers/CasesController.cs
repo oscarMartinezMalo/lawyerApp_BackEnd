@@ -104,7 +104,8 @@ namespace LawyerApp.Controllers
             return BadRequest("Failed to save Case");
         }
 
-        // POST api/<CasesController>
+        // PUT api/<CasesController>/caseId
+        // PUT api/<CasesController>/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] CaseDto caseResource)
         {
@@ -129,13 +130,8 @@ namespace LawyerApp.Controllers
 
             return BadRequest("Failed to save Case");
         }
-        //// PUT api/<CasesController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
 
-        //// DELETE api/<CasesController>/5
+        // DELETE api/<CasesController>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

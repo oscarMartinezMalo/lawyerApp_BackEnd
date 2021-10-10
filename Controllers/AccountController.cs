@@ -94,13 +94,15 @@ namespace LawyerApp.Controllers
                             signingCredentials: creds
                             );
 
+                        //// 
+
                         var results = new
                         {
                             id = user.Id,
                             firstName = user.FirstName,
                             lastName = user.LastName,
                             email = user.Email,
-                            role = "NotSetYet",
+                            roles = await this.SetUserRoles(user),
                             accessToken = new JwtSecurityTokenHandler().WriteToken(token),
                             refreshToken = new JwtSecurityTokenHandler().WriteToken(token),
                             expiration = token.ValidTo,
@@ -192,9 +194,9 @@ namespace LawyerApp.Controllers
 
             var user = mapper.Map<LawyerUser, UserDto>(userAccount);
 
-            var userWithRoles = await this.SetUserRoles(user, userAccount);
+            user.Roles = await this.SetUserRoles( userAccount);
 
-            return Ok(userWithRoles);
+            return Ok(user);
         }
 
         [HttpGet("{id}")]
@@ -207,9 +209,9 @@ namespace LawyerApp.Controllers
             var user = mapper.Map<LawyerUser, UserDto>(userAccount);
             //user.Roles = await userManager.GetRolesAsync(userAccount);
 
-            var userWithRoles = await this.SetUserRoles(user, userAccount);
+            user.Roles = await this.SetUserRoles(userAccount);
 
-            return Ok(userWithRoles);
+            return Ok(user);
         }
 
         [HttpPost]
@@ -609,18 +611,18 @@ namespace LawyerApp.Controllers
         }
         ////
         // Get the Roles from an User
-        private async Task<UserDto> SetUserRoles(UserDto user, LawyerUser userDb)
+        private async Task<IList<IdentityRole>> SetUserRoles( LawyerUser userDb)
         {
-            user.Roles = new List<IdentityRole>();
+            var roles = new List<IdentityRole>();
             foreach (var role in roleManager.Roles)
             {
                 if (await userManager.IsInRoleAsync(userDb, role.Name))
                 {
-                    user.Roles.Add(role);
+                    roles.Add(role);
                 }
             }
 
-            return user;
+            return roles;
         }
     }
 }
