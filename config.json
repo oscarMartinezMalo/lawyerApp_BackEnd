@@ -4,7 +4,7 @@
 	},
 	"Logging": {
 		"LogLevel": {
-			"LawyerApp": "Information",
+			"LawyerApp": "Warning",
 			"Microsoft": "Warning"
 		}
 	},

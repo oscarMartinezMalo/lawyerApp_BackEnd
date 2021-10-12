@@ -34,7 +34,8 @@ namespace LawyerApp.Controllers
         private readonly IMapper mapper;
         private readonly IConfiguration config;
 
-        public AccountController(ILogger<AccountController> logger,
+        public AccountController(
+            ILogger<AccountController> logger,
             SignInManager<LawyerUser> signInManager,
             UserManager<LawyerUser> userManager,
             RoleManager<IdentityRole> roleManager,
@@ -57,12 +58,16 @@ namespace LawyerApp.Controllers
         [ActionName("signin")]
         public async Task<IActionResult> GenerateToken([FromBody] LoginDto model)
         {
+            throw new Exception("test");
             if (ModelState.IsValid)
             {
                 var user = await userManager.FindByNameAsync(model.Email);
-
+                
                 if (user != null)
                 {
+                    if (!user.EmailConfirmed && await userManager.CheckPasswordAsync(user, model.Password))
+                        return BadRequest("Email not confirmed yet");
+
                     var result = await signInManager.CheckPasswordSignInAsync(user, model.Password, false);
                     if (result.Succeeded)
                     {
@@ -133,6 +138,11 @@ namespace LawyerApp.Controllers
                     //var resultRole = await roleManager.CreateAsync(new IdentityRole("Admin"));
                     //await userManager.AddToRoleAsync(user, "Admin");
 
+                    // Create and Send a cofirmation Link to user account after create a new account.
+                    var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = confirmationToken }, Request.Scheme);
+                    mailService.SendMessage($"{user.Email}", "Confirm your account", confirmationLink);
+
                     return Created("", model);
                 }
 
@@ -143,6 +153,31 @@ namespace LawyerApp.Controllers
                 return BadRequest(ex.Message);
             }
 
+        }
+
+        [HttpGet]
+        [ActionName("confirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            try
+            {
+                if (userId == null || token == null) return BadRequest();
+
+                var user = await userManager.FindByIdAsync(userId);
+
+                if (user == null) return BadRequest();
+
+                var result = await userManager.ConfirmEmailAsync(user, token);
+
+                if (result.Succeeded)
+                    return Ok("Email was confirmed successfully, you can login now!!!");
+
+                return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]

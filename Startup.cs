@@ -1,6 +1,7 @@
 using LawyerApp.Data;
 using LawyerApp.Data.Entities;
 using LawyerApp.Persistent;
+using LawyerApp.Security;
 using LawyerApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Reflection;
 using System.Text;
 
@@ -46,17 +48,26 @@ namespace LawyerApp
             services.AddIdentity<LawyerUser, IdentityRole>(cfg =>
             {
                 cfg.User.RequireUniqueEmail = true;
-                cfg.SignIn.RequireConfirmedAccount = false;
+                cfg.SignIn.RequireConfirmedAccount = true;
 
+                cfg.Tokens.EmailConfirmationTokenProvider = "CustomEmailConfirmation"; // This line is neccesary to change emailConfirmation token lifeSpan
             })
                 .AddEntityFrameworkStores<LawyerAppContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddTokenProvider<CustomEmailConfirmationTokenProvider<LawyerUser>>("CustomEmailConfirmation");   // This line is neccesary to change emailConfirmation token lifeSpan
+
+            // Setting General tokens lifespan to 5 hour
+            services.Configure<DataProtectionTokenProviderOptions>(o =>
+            o.TokenLifespan = TimeSpan.FromHours(5));
+
+            // Change token lifespan of just Email Confirmation token 
+            services.Configure< CustomEmailConfirmationTokenProviderOptions>(o =>
+           o.TokenLifespan = TimeSpan.FromDays(2));
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddTransient<IMailService, NullMailService>();
             // Support for Real mail Service
-
 
             services.AddTransient<LawyerAppSeeder>();
 
@@ -78,11 +89,22 @@ namespace LawyerApp
         {
             if (env.IsDevelopment())
             {
+                DeveloperExceptionPageOptions developerExceptionPageOptions = new DeveloperExceptionPageOptions()
+                {
+                    SourceCodeLineCount = 10
+                };
+
                 app.UseDeveloperExceptionPage();
+
+                // Log Error using NLog the path to the logs are in nlog.config file
+                app.UseExceptionHandler("/Error");
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                // Log Error using NLog the path to the logs are in nlog.config file
+                app.UseExceptionHandler("/Error");
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
