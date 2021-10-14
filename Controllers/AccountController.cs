@@ -58,7 +58,6 @@ namespace LawyerApp.Controllers
         [ActionName("signin")]
         public async Task<IActionResult> GenerateToken([FromBody] LoginDto model)
         {
-            throw new Exception("test");
             if (ModelState.IsValid)
             {
                 var user = await userManager.FindByNameAsync(model.Email);
@@ -66,7 +65,14 @@ namespace LawyerApp.Controllers
                 if (user != null)
                 {
                     if (!user.EmailConfirmed && await userManager.CheckPasswordAsync(user, model.Password))
-                        return BadRequest("Email not confirmed yet");
+                    {
+                        // Send email to confirm the account
+                        var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = confirmationToken }, Request.Scheme);
+                        mailService.SendMessage($"{user.Email}", "Confirm your account", confirmationLink);
+
+                        return BadRequest("Email not confirmed yet, you should have an email to confirmed the account");
+                    }
 
                     var result = await signInManager.CheckPasswordSignInAsync(user, model.Password, false);
                     if (result.Succeeded)
@@ -138,7 +144,7 @@ namespace LawyerApp.Controllers
                     //var resultRole = await roleManager.CreateAsync(new IdentityRole("Admin"));
                     //await userManager.AddToRoleAsync(user, "Admin");
 
-                    // Create and Send a cofirmation Link to user account after create a new account.
+                    // Create and Send a cofirmation Link to user account after create a new account(confirm account).
                     var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
                     var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = confirmationToken }, Request.Scheme);
                     mailService.SendMessage($"{user.Email}", "Confirm your account", confirmationLink);
