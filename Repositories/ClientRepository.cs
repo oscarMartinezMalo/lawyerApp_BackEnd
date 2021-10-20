@@ -101,10 +101,10 @@ namespace LawyerApp.Repositories
             ctx.Clients.Remove(clientToDelete);
         }
 
-        public void AddEntity(object model)
-        {
-            ctx.Add(model);
-        }
+        //public void AddEntity(object model)
+        //{
+        //    ctx.Add(model);
+        //}
 
         public bool SaveAll()
         {

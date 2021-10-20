@@ -9,6 +9,7 @@ namespace LawyerApp.Persistent
 
         public ICaseRepository Cases { get; private set; }
         public IClientRepository Clients { get; private set; }
+        public IDocumentRepository Documents { get; private set; }
 
         public UnitOfWork(
             LawyerAppContext ctx
@@ -17,6 +18,7 @@ namespace LawyerApp.Persistent
             this.ctx = ctx;
             Cases = new CaseRepository(ctx);
             Clients = new ClientRepository(ctx);
+            Documents = new DocumentRepository(ctx);
         }
 
         public bool Complete()

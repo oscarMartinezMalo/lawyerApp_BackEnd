@@ -5,7 +5,7 @@ namespace LawyerApp.Repositories
 {
     public interface IClientRepository
     {
-        void AddEntity(object model);
+        //void AddEntity(object model);
         IEnumerable<Client> GetAllClients();
         IEnumerable<Client> GetAllClients(bool includesCases);
         IEnumerable<Client> GetAllClientsByLawyerUser(bool includesCases, string lawyerUserName);

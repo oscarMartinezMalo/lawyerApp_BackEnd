@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace LawyerApp.Services
 {
-    interface IDocumentService
+    public interface IDocumentService
     {
-        void Upload(IFormFile formFile);
+        string Upload(IFormFile formFile);
+        byte[] GetFileByName(string fileName);
     }
 }

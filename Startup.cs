@@ -67,6 +67,7 @@ namespace LawyerApp
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddTransient<IMailService, NullMailService>();
+            services.AddTransient<IDocumentService, DocumentService>();
             // Support for Real mail Service
 
             services.AddTransient<LawyerAppSeeder>();
