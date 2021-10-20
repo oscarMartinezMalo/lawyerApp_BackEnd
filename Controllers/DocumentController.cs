@@ -17,7 +17,7 @@ namespace LawyerApp.Controllers
         [ActionName("")]
         public FileContentResult Get()
         {
-            string filePath = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "firstForm.docx");
+            string filePath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "firstForm.docx");
             return File(System.IO.File.ReadAllBytes(filePath), "application/octet-stream", "firstForm.docx");
         }
 
@@ -25,23 +25,27 @@ namespace LawyerApp.Controllers
         [ActionName("")]
         public IActionResult Post(IFormFile document)
         {
-            //var httpRequest = HttpContext.Request.Form;
-            //if (httpRequest.Files.Count < 1) return BadRequest("You have to attach a document");
+            try
+            {
+                string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "documents");
+                var uniqueFileName = DateTime.Now.ToString("yyyyMMddTHH-mm-ssZ") + "_" + Guid.NewGuid().ToString() + "_" + document.FileName;
+                string fileAddress = Path.Combine(uploadFolder, uniqueFileName);
 
-            string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "documents");
-            var uniqueFileName = DateTime.Now.ToString("yyyyMMddTHH-mm-ssZ")  + "_" + Guid.NewGuid().ToString() + "_" + document.FileName;
-            string fileAddress = Path.Combine(uploadFolder, uniqueFileName);
-
-            document.CopyTo(new FileStream(fileAddress, FileMode.Create));
+                document.CopyTo(new FileStream(fileAddress, FileMode.Create));
+            }
+            catch (Exception)
+            {
+                return BadRequest("File was not saved");
+            }
 
             return Ok("File successfully submited!!!");
         }
 
-        [HttpPost]
-        [ActionName("uploadFiles")]
-        public IActionResult Post(IList<IFormFile> document)
-        {
-            return Ok();
-        }
+        //[HttpPost]
+        //[ActionName("uploadFiles")]
+        //public IActionResult Post(IList<IFormFile> document)
+        //{
+        //    return Ok();
+        //}
     }
 }
