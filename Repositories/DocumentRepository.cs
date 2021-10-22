@@ -21,9 +21,12 @@ namespace LawyerApp.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Document> GetAllDocuments()
+        public IEnumerable<Document> GetAllDocumentsByLawyerUser(string lawyerUserName)
         {
-            throw new NotImplementedException();
+            return ctx.Documents
+             .Where(d => d.Lawyer.UserName == lawyerUserName)
+             .OrderBy(d => d.DateCreated)
+             .ToList();
         }
 
         public bool SaveAll()

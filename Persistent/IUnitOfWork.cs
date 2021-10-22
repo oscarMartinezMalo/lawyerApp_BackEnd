@@ -6,6 +6,7 @@ namespace LawyerApp.Persistent
     {
         ICaseRepository Cases { get; }
         IClientRepository Clients { get; }
+        IDocumentRepository Documents { get; }
 
         void AddEntity(object model);
         bool Complete();

@@ -8,7 +8,7 @@ namespace LawyerApp.Repositories
 {
     public interface IDocumentRepository
     {
-        IEnumerable<Document> GetAllDocuments();
+        IEnumerable<Document> GetAllDocumentsByLawyerUser(string lawyerUserName);
         void Delete(Document document);
         bool SaveAll();
     }

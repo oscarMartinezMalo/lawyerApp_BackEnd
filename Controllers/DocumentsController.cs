@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,16 +22,19 @@ namespace LawyerApp.Controllers
     {
         private readonly IDocumentService documentService;
         private readonly IUnitOfWork unitOfWork;
+        private readonly ILogger<CasesController> logger;
         private readonly UserManager<LawyerUser> userManager;
 
         public DocumentsController(
             IDocumentService documentService,
             IUnitOfWork unitOfWork,
+            ILogger<CasesController> logger,
             UserManager<LawyerUser> userManager
             )
                 {
             this.documentService = documentService;
             this.unitOfWork = unitOfWork;
+            this.logger = logger;
             this.userManager = userManager;
         }
 
@@ -40,6 +44,26 @@ namespace LawyerApp.Controllers
         public FileContentResult Get(string fileName = "firstForm.docx")
         {
             return File(this.documentService.GetFileByName(fileName), "application/octet-stream", fileName);
+        }
+
+        [HttpGet]
+        [ActionName("getAllDocumentsOfLawyer")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public ActionResult<IEnumerable<Document>> GetAllDocumentsByUser()
+        {
+            try
+            {
+                var lawyerUserName = User.Identity.Name;
+
+                var documents = unitOfWork.Documents.GetAllDocumentsByLawyerUser(lawyerUserName);
+                return Ok(documents);
+                //return Ok(mapper.Map<IEnumerable<Client>, IEnumerable<ClientDto>>(results));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to get Documents: {ex}");
+                return BadRequest("Failed to get Documents");
+            }
         }
 
         [HttpPost]
