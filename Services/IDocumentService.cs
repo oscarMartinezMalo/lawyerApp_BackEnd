@@ -9,6 +9,6 @@ namespace LawyerApp.Services
     public interface IDocumentService
     {
         string Upload(IFormFile formFile);
-        byte[] GetFileByName(string fileName);
+        byte[] GetDocumentByName(string fileName);
     }
 }

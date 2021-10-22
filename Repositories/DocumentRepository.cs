@@ -29,6 +29,13 @@ namespace LawyerApp.Repositories
              .ToList();
         }
 
+        public Document GetDocumentById(int documentId, string userId)
+        {
+            return ctx.Documents
+                .Where(d => d.Id == documentId && d.LawyerId == userId)
+                .FirstOrDefault();
+        }
+
         public bool SaveAll()
         {
             return ctx.SaveChanges() > 0;

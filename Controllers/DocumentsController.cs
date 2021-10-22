@@ -18,6 +18,7 @@ namespace LawyerApp.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class DocumentsController : Controller
     {
         private readonly IDocumentService documentService;
@@ -39,16 +40,18 @@ namespace LawyerApp.Controllers
         }
 
         // Get document by document Name
-        [HttpGet]
-        [ActionName("")]
-        public FileContentResult Get(string fileName = "firstForm.docx")
+        [HttpGet("{id}")]
+        [ActionName("GetDocumentById")]
+        public async Task<FileContentResult> GetDocumentById(int id)
         {
-            return File(this.documentService.GetFileByName(fileName), "application/octet-stream", fileName);
+            LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
+            var document = this.unitOfWork.Documents.GetDocumentById(id, user.Id);
+
+            return File(this.documentService.GetDocumentByName(document.NameInDirectory), "application/octet-stream", document.Name);
         }
 
         [HttpGet]
         [ActionName("getAllDocumentsOfLawyer")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public ActionResult<IEnumerable<Document>> GetAllDocumentsByUser()
         {
             try
@@ -68,7 +71,6 @@ namespace LawyerApp.Controllers
 
         [HttpPost]
         [ActionName("")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Post(IFormFile document)
         {
             LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
@@ -103,6 +105,7 @@ namespace LawyerApp.Controllers
 
         [HttpPost]
         [ActionName("uploadFileAnonymous")]
+        [AllowAnonymous]
         public IActionResult UploadFileAnonymous(IFormFile document)
         {
             try

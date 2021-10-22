@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +11,13 @@ namespace LawyerApp.Services
 {
     public class DocumentService : IDocumentService
     {
+        private ILogger<DocumentService> logger;
+
+        public DocumentService( ILogger<DocumentService> logger)
+        {
+            this.logger = logger;
+        }
+
         public string Upload(IFormFile formFile)
         {
             string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "documents");
@@ -21,9 +29,9 @@ namespace LawyerApp.Services
             return uniqueFileName;
         }
 
-        public byte[] GetFileByName(string fileName)
+        public byte[] GetDocumentByName(string fileName)
         {
-            string filePath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), fileName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", fileName);
             return File.ReadAllBytes(filePath);
         }
     }
