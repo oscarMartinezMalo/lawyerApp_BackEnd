@@ -29,10 +29,16 @@ namespace LawyerApp.Services
             return uniqueFileName;
         }
 
-        public byte[] GetDocumentByName(string fileName)
+        public byte[] GetDocumentByName(string documentName)
         {
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", fileName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", documentName);
             return File.ReadAllBytes(filePath);
+        }
+
+        public void DeleteDocument(string documentName)
+        {
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", documentName);
+            File.Delete(filePath);
         }
     }
 }

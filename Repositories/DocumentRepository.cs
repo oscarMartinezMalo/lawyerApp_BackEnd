@@ -18,7 +18,7 @@ namespace LawyerApp.Repositories
 
         public void Delete(Document document)
         {
-            throw new NotImplementedException();
+            ctx.Documents.Remove(document);
         }
 
         public IEnumerable<Document> GetAllDocumentsByLawyerUser(string lawyerUserName)

@@ -23,13 +23,13 @@ namespace LawyerApp.Controllers
     {
         private readonly IDocumentService documentService;
         private readonly IUnitOfWork unitOfWork;
-        private readonly ILogger<CasesController> logger;
+        private readonly ILogger<DocumentsController> logger;
         private readonly UserManager<LawyerUser> userManager;
 
         public DocumentsController(
             IDocumentService documentService,
             IUnitOfWork unitOfWork,
-            ILogger<CasesController> logger,
+            ILogger<DocumentsController> logger,
             UserManager<LawyerUser> userManager
             )
                 {
@@ -136,10 +136,31 @@ namespace LawyerApp.Controllers
             return Ok("File successfully submited!!!");
         }
 
-        // Get document by ID
-        // Delete document
-        //
+        // DELETE api/<DocumentsController>/5
+        [HttpDelete("{id}")]
+        [ActionName("delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
+                var documentToDelete = this.unitOfWork.Documents.GetDocumentById(id, user.Id);
 
+                if (documentToDelete == null) return NotFound();
+
+                this.unitOfWork.Documents.Delete(documentToDelete);   // Delete Document from Database
+                if(!unitOfWork.Complete()) return BadRequest("Failed to delete Document");
+
+                this.documentService.DeleteDocument(documentToDelete.NameInDirectory);  // Delete document from document directory
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to save new Client: {ex}");
+                return BadRequest("Failed to delete Document");
+            }
+        }
 
         //[HttpPost]
         //[ActionName("uploadFiles")]
