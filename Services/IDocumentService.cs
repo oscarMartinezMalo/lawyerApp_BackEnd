@@ -11,5 +11,6 @@ namespace LawyerApp.Services
         string Upload(IFormFile formFile);
         byte[] GetDocumentByName(string documentName);
         void DeleteDocument(string documentName);
+        string[] ReadDocumentDetectVariables();
     }
 }

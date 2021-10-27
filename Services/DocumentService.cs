@@ -40,5 +40,10 @@ namespace LawyerApp.Services
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", documentName);
             File.Delete(filePath);
         }
+
+        public string[] ReadDocumentDetectVariables()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
