@@ -8,9 +8,9 @@ namespace LawyerApp.Services
 {
     public interface IDocumentService
     {
-        string Upload(IFormFile formFile);
+        Task<string> Upload(IFormFile formFile);
         byte[] GetDocumentByName(string documentName);
         void DeleteDocument(string documentName);
-        string[] ReadDocumentDetectVariables();
+        List<string> ReadDocumentDetectVariables(string documentName);
     }
 }

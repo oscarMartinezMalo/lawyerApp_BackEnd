@@ -32,7 +32,7 @@ namespace LawyerApp.Controllers
             ILogger<DocumentsController> logger,
             UserManager<LawyerUser> userManager
             )
-                {
+        {
             this.documentService = documentService;
             this.unitOfWork = unitOfWork;
             this.logger = logger;
@@ -71,13 +71,13 @@ namespace LawyerApp.Controllers
 
         [HttpPost]
         [ActionName("")]
-        public async Task<IActionResult> Post(IFormFile document)
+        public async Task<IActionResult> UploadFileForUser(IFormFile document)
         {
             LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
             try
             {
                 // Save file in folder directory
-                string directoryFileName = this.documentService.Upload(document);
+                string directoryFileName = await this.documentService.Upload(document);
 
                 // Save information of the file in database
                 var newDocument = new Document
@@ -95,8 +95,9 @@ namespace LawyerApp.Controllers
                     return Created($"/api/documents/{newDocument.Id}", document);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError("Error", ex);
                 return BadRequest("File was not saved");
             }
 
@@ -106,12 +107,12 @@ namespace LawyerApp.Controllers
         [HttpPost]
         [ActionName("uploadFileAnonymous")]
         [AllowAnonymous]
-        public IActionResult UploadFileAnonymous(IFormFile document)
+        public async Task<IActionResult> UploadFileAnonymous(IFormFile document)
         {
             try
             {
                 // Save file in folder directory
-                string directoryFileName = this.documentService.Upload(document);
+                string directoryFileName = await this.documentService.Upload(document);
 
                 // Save information of the file in database
                 var newDocument = new Document
@@ -149,7 +150,7 @@ namespace LawyerApp.Controllers
                 if (documentToDelete == null) return NotFound();
 
                 this.unitOfWork.Documents.Delete(documentToDelete);   // Delete Document from Database
-                if(!unitOfWork.Complete()) return BadRequest("Failed to delete Document");
+                if (!unitOfWork.Complete()) return BadRequest("Failed to delete Document");
 
                 this.documentService.DeleteDocument(documentToDelete.NameInDirectory);  // Delete document from document directory
 
@@ -162,11 +163,32 @@ namespace LawyerApp.Controllers
             }
         }
 
-        //[HttpPost]
-        //[ActionName("uploadFiles")]
-        //public IActionResult Post(IList<IFormFile> document)
-        //{
-        //    return Ok();
-        //}
+        [HttpGet("{id}")]
+        [ActionName("getDocumentInfoById")]
+        public async Task<Document> GetDocumentInfoById(int id)
+        {
+            LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
+            var document = this.unitOfWork.Documents.GetDocumentById(id, user.Id);
+            return document;
+        }
+
+        [HttpGet("{id}")]
+        [ActionName("getVariablesOfDocument")]
+        public async Task<IEnumerable<string>> GetAllDocumentsByUser(int id)
+        {
+            LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
+            var document = this.unitOfWork.Documents.GetDocumentById(id, user.Id);
+
+            var result = this.documentService.ReadDocumentDetectVariables(document.NameInDirectory);
+            return result;
+        }
+
+
+        [HttpPost("{documentId}")]
+        [ActionName("fillAndDownloadDocument")]
+        public IActionResult FillAndDownloadDocument(int documentId, [FromBody] Object[] list)
+        {
+            return Ok(documentId);
+        }
     }
 }
