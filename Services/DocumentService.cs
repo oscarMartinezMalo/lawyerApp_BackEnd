@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SautinSoft.Document;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace LawyerApp.Services
 {
@@ -46,6 +47,11 @@ namespace LawyerApp.Services
             return File.ReadAllBytes(filePath);
         }
 
+        public byte[] GetDocumentByCompletePath(string filePath)
+        {
+            return File.ReadAllBytes(filePath);
+        }
+
         public void DeleteDocument(string documentName)
         {
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", documentName);
@@ -66,6 +72,33 @@ namespace LawyerApp.Services
                 .ToList();
 
             return result;
+        }
+
+        public string ProcessAndCreateDocument( List<Object> listVariables,string documentName)
+        {
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", documentName);
+            DocumentCore dc = DocumentCore.Load(filePath);
+
+            foreach (var variableObj in listVariables)
+            {
+                // Get the key and value of the object
+                var testing = Newtonsoft.Json.JsonConvert.SerializeObject(variableObj);
+                var jobj = JObject.Parse(testing);
+                var oldValue ="{{" + jobj.Properties().First().Name + "}}";
+                var newValue = jobj.Properties().First().Value.ToString();
+                // Get the key and value of the object
+
+                // Replace the old words with the new words
+                dc.Content.Find(oldValue)
+                    .Reverse()
+                    .FirstOrDefault()
+                    .Replace(newValue);
+            }
+
+            string newDocumentFilePath = Path.Combine(Directory.GetCurrentDirectory(), "documents/temp", documentName); // Create a path to save Document
+
+            dc.Save(newDocumentFilePath, new DocxSaveOptions());    // Save Document as Word in temp file
+            return newDocumentFilePath;
         }
     }
 }

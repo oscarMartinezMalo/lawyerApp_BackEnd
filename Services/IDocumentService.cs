@@ -10,7 +10,9 @@ namespace LawyerApp.Services
     {
         Task<string> Upload(IFormFile formFile);
         byte[] GetDocumentByName(string documentName);
+        byte[] GetDocumentByCompletePath(string filePath);
         void DeleteDocument(string documentName);
         List<string> ReadDocumentDetectVariables(string documentName);
+        string ProcessAndCreateDocument(List<Object> values, string documentName);
     }
 }

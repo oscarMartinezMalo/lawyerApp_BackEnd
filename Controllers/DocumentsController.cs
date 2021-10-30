@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -186,9 +187,17 @@ namespace LawyerApp.Controllers
 
         [HttpPost("{documentId}")]
         [ActionName("fillAndDownloadDocument")]
-        public IActionResult FillAndDownloadDocument(int documentId, [FromBody] Object[] list)
+        public async Task<FileContentResult> FillAndDownloadDocument(int documentId, [FromBody] List<Object> listVariables)
         {
-            return Ok(documentId);
+            LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
+            var document = this.unitOfWork.Documents.GetDocumentById(documentId, user.Id);
+
+            // Process document and get the path of new document generated
+            string pathToDocumentGenerated = this.documentService.ProcessAndCreateDocument(listVariables, document.NameInDirectory);
+
+            // Return physical document to the user
+            return File(this.documentService.GetDocumentByCompletePath(pathToDocumentGenerated), "application/octet-stream", document.Name);
         }
     }
+
 }
