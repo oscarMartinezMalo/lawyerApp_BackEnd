@@ -187,16 +187,24 @@ namespace LawyerApp.Controllers
 
         [HttpPost("{documentId}")]
         [ActionName("fillAndDownloadDocument")]
-        public async Task<FileContentResult> FillAndDownloadDocument(int documentId, [FromBody] List<Object> listVariables)
+        public async Task<IActionResult> FillAndDownloadDocument(int documentId, [FromBody] List<Object> listVariables)
         {
             LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
             var document = this.unitOfWork.Documents.GetDocumentById(documentId, user.Id);
 
-            // Process document and get the path of new document generated
-            string pathToDocumentGenerated = this.documentService.ProcessAndCreateDocument(listVariables, document.NameInDirectory);
+            try
+            {
+                // Process document and get the path of new document generated
+                string pathToDocumentGenerated = this.documentService.ProcessAndCreateDocument(listVariables, document.NameInDirectory);
 
-            // Return physical document to the user
-            return File(this.documentService.GetDocumentByCompletePath(pathToDocumentGenerated), "application/octet-stream", document.Name);
+                // Return physical document to the user
+                return File(this.documentService.GetDocumentByCompletePath(pathToDocumentGenerated), "application/octet-stream", document.Name);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Something went wrong, can process the document");
+            }
+
         }
     }
 

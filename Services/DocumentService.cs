@@ -89,15 +89,13 @@ namespace LawyerApp.Services
                 // Get the key and value of the object
 
                 // Replace the old words with the new words
-                dc.Content.Find(oldValue)
-                    .Reverse()
-                    .FirstOrDefault()
-                    .Replace(newValue);
+                dc.Content.Find(oldValue).Reverse().FirstOrDefault()
+                          .Replace(newValue);
             }
 
             string newDocumentFilePath = Path.Combine(Directory.GetCurrentDirectory(), "documents/temp", documentName); // Create a path to save Document
 
-            dc.Save(newDocumentFilePath, new DocxSaveOptions());    // Save Document as Word in temp file
+            dc.Save(newDocumentFilePath, new DocxSaveOptions());  // Save Document as Word in temp file
             return newDocumentFilePath;
         }
     }
