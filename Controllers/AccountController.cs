@@ -69,7 +69,7 @@ namespace LawyerApp.Controllers
                         // Send email to confirm the account
                         var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
                         var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = confirmationToken }, Request.Scheme);
-                        mailService.SendMessage($"{user.Email}", "Confirm your account", confirmationLink);
+                        mailService.SendAccountConfirmation($"{user.Email}", "Confirm your account", confirmationLink);
 
                         return BadRequest("Email not confirmed yet, you should have an email to confirmed the account");
                     }
@@ -147,7 +147,7 @@ namespace LawyerApp.Controllers
                     // Create and Send a cofirmation Link to user account after create a new account(confirm account).
                     var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
                     var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = confirmationToken }, Request.Scheme);
-                    mailService.SendMessage($"{user.Email}", "Confirm your account", confirmationLink);
+                    mailService.SendAccountConfirmation($"{user.Email}", "Confirm your account", confirmationLink);
 
                     return Created("", model);
                 }
@@ -200,7 +200,8 @@ namespace LawyerApp.Controllers
 
                 var resetPasswordLink = config["FrontEnd:url"] + "forgot-password-token?token=" + token;
 
-                mailService.SendMessage($"{user.Email}", "Reset you Email", resetPasswordLink);
+                //mailService.SendMessage($"{user.Email}", "Reset you Email", resetPasswordLink);
+                mailService.SendResetPasswordLink(user.Email, "Reset your Email", resetPasswordLink);
             }
             catch (Exception ex)
             {

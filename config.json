@@ -16,5 +16,11 @@
 	},
 	"FrontEnd": {
 		"Url": "http://localhost:4200/"
+	},
+	"Gmail": {
+		"From":  "Process App",
+		"Sender": "ommalorwork@gmail.com",
+		"Password": "magnu8magnu8",
+		"Port": 587
 	}
 }

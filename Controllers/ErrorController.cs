@@ -29,7 +29,6 @@ namespace LawyerApp.Controllers
         public IActionResult Index()
         {
             var result = unitOfWork.Cases.GetAllCases();
-            mailService.SendMessage("ommalor@gmail.com", "Oscar", "Body of Message");
             return View();
         }
 

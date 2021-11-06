@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Net;
+using System.Net.Mail;
 using System.Reflection;
 using System.Text;
 
@@ -65,6 +67,24 @@ namespace LawyerApp
            o.TokenLifespan = TimeSpan.FromDays(2));
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            // FluentEmail service configuration
+            var from = Configuration.GetSection("Gmail")["From"];
+            var gmailSender = Configuration.GetSection("Gmail")["Sender"];
+            var gmailPassword = Configuration.GetSection("Gmail")["Password"];
+            var gmailPort = Convert.ToInt32(Configuration.GetSection("Gmail")["Port"]);
+
+            services
+                .AddFluentEmail(gmailSender, from)
+                .AddRazorRenderer()
+                .AddSmtpSender(new SmtpClient("smtp.gmail.com") 
+                { 
+                    UseDefaultCredentials = false,
+                    Port = gmailPort,
+                    Credentials = new NetworkCredential(gmailSender, gmailPassword),
+                    EnableSsl = true,
+                });
+            // End FluentEmail service configuration
 
             services.AddTransient<IMailService, NullMailService>();
             services.AddTransient<IDocumentService, DocumentService>();
