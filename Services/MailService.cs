@@ -8,12 +8,12 @@ using System.Net.Mail;
 
 namespace LawyerApp.Services
 {
-    public class NullMailService : IMailService
+    public class MailService : IMailService
     {
-        private readonly ILogger<NullMailService> logger;
+        private readonly ILogger<MailService> logger;
         private readonly IFluentEmailFactory emailFactory;
 
-        public NullMailService(ILogger<NullMailService> logger,
+        public MailService(ILogger<MailService> logger,
             IFluentEmailFactory emailFactory)
         {
             this.logger = logger;
@@ -36,9 +36,7 @@ namespace LawyerApp.Services
             {
                 logger.LogError("Email was not send", ex);
             }
-
         }
-
 
         public async void SendAccountConfirmation(string to, string subject, string confirmationLink)
         {

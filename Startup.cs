@@ -86,9 +86,8 @@ namespace LawyerApp
                 });
             // End FluentEmail service configuration
 
-            services.AddTransient<IMailService, NullMailService>();
+            services.AddTransient<IMailService, MailService>();
             services.AddTransient<IDocumentService, DocumentService>();
-            // Support for Real mail Service
 
             services.AddTransient<LawyerAppSeeder>();
 
