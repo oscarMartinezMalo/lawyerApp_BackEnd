@@ -10,6 +10,7 @@ namespace LawyerApp.Repositories
     {
         IEnumerable<Document> GetAllDocumentsByLawyerUser(string lawyerUserName);
         Document GetDocumentById(int documentId, string userId);
+        Document GetDocumentByIdAnonymous(int documentId);
         void Delete(Document document);
         bool SaveAll();
     }

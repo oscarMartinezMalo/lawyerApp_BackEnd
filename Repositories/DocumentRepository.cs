@@ -36,7 +36,14 @@ namespace LawyerApp.Repositories
                 .FirstOrDefault();
         }
 
-        public bool SaveAll()
+        public Document GetDocumentByIdAnonymous(int documentId)
+        {
+            return ctx.Documents
+                .Where(d => d.Id == documentId && d.LawyerId == null)
+                .FirstOrDefault();
+        }
+
+    public bool SaveAll()
         {
             return ctx.SaveChanges() > 0;
         }

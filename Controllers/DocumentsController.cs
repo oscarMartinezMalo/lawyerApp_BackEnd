@@ -1,4 +1,5 @@
 ﻿using LawyerApp.Data.Entities;
+using LawyerApp.Dtos;
 using LawyerApp.Persistent;
 using LawyerApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -113,13 +114,13 @@ namespace LawyerApp.Controllers
             try
             {
                 // Save file in folder directory
-                string directoryFileName = await this.documentService.Upload(document);
+                FileNameVariablesDto fileNameVariables = await this.documentService.UploadProcessDownload(document);
 
                 // Save information of the file in database
                 var newDocument = new Document
                 {
                     Name = document.FileName,
-                    NameInDirectory = directoryFileName,
+                    NameInDirectory = fileNameVariables.FileName,
                     DateCreated = DateTime.Now,
                     Size = document.Length,
                 };
@@ -127,7 +128,9 @@ namespace LawyerApp.Controllers
                 unitOfWork.AddEntity(newDocument);
                 if (unitOfWork.Complete())
                 {
-                    return Created($"/api/documents/{newDocument.Id}", document);
+                    var fileIdAndVariables = new FileIdFileVariablesDto() { FileId = newDocument.Id, FileVariables = fileNameVariables.FileVariables };
+                    return Ok(fileIdAndVariables);
+                    //return Created($"/api/documents/{newDocument.Id}", document);
                 }
             }
             catch (Exception)
@@ -174,8 +177,28 @@ namespace LawyerApp.Controllers
         }
 
         [HttpGet("{id}")]
+        [ActionName("getDocumentInfoByIdAnonymous")]
+        [AllowAnonymous]
+        public Document GetDocumentInfoByIdAnonymous(int id)
+        {
+            var document = this.unitOfWork.Documents.GetDocumentByIdAnonymous(id);
+            return document;
+        }
+
+        [HttpGet("{id}")]
+        [ActionName("getVariablesOfDocumentAnonymous")]
+        [AllowAnonymous]
+        public IEnumerable<string> GetVariablesOfDocumentAnonymous(int id)
+        {
+            var document = this.unitOfWork.Documents.GetDocumentByIdAnonymous(id);
+
+            var result = this.documentService.ReadDocumentDetectVariables(document.NameInDirectory, "documents/anonymous/");
+            return result;
+        }
+
+        [HttpGet("{id}")]
         [ActionName("getVariablesOfDocument")]
-        public async Task<IEnumerable<string>> GetAllDocumentsByUser(int id)
+        public async Task<IEnumerable<string>> GetVariablesOfDocument(int id)
         {
             LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
             var document = this.unitOfWork.Documents.GetDocumentById(id, user.Id);
@@ -184,6 +207,28 @@ namespace LawyerApp.Controllers
             return result;
         }
 
+        [HttpPost("{documentId}")]
+        [ActionName("fillAndDownloadDocumentAnonymous")]
+        [AllowAnonymous]
+        public IActionResult FillAndDownloadDocumentAnonymous(int documentId, [FromBody] List<Object> listVariables)
+        {
+            var document = this.unitOfWork.Documents.GetDocumentByIdAnonymous(documentId);
+
+            try
+            {
+                // Process document and get the path of new document generated
+                string pathToDocumentGenerated = this.documentService.ProcessAndCreateDocument(listVariables, document.NameInDirectory, "documents/anonymous");
+
+                var doc = this.documentService.GetDocumentByCompletePath(pathToDocumentGenerated);
+                // Return physical document to the user
+                return File(doc, "application/octet-stream", document.Name);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Document was not process", ex);
+                return BadRequest("Something went wrong, can process the document");
+            }
+        }
 
         [HttpPost("{documentId}")]
         [ActionName("fillAndDownloadDocument")]

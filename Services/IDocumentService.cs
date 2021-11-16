@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LawyerApp.Dtos;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,9 @@ namespace LawyerApp.Services
         byte[] GetDocumentByCompletePath(string filePath);
         void DeleteDocument(string documentName);
         List<string> ReadDocumentDetectVariables(string documentName);
+        List<string> ReadDocumentDetectVariables(string documentName, string directoryToStore);
         string ProcessAndCreateDocument(List<Object> values, string documentName);
+        string ProcessAndCreateDocument(List<Object> values, string documentName, string directoryToStore);
+        Task<FileNameVariablesDto> UploadProcessDownload(IFormFile formFile);
     }
 }
