@@ -1,0 +1,76 @@
+<mat-progress-bar style="position: fixed;" [mode]="progressBarMode" value="0"
+    [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
+</mat-progress-bar>
+
+<div class="container-wrapper">
+    <mat-card class="mat-custom-authen">
+        <!-- *ngIf="signUpForm.hasError('accountExitorPasswordComplexity')" -->
+        <div *ngFor="let oneError of formErrors" class="error-message" div fxLayout="row" fxLayoutAlign="start center"> 
+            <strong> {{oneError.description}}</strong>
+        </div>
+    
+
+        <form [formGroup]="signUpForm" novalidate (ngSubmit)="onSubmit()">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <h2 style="font-weight: 900;">Sign-Up</h2>
+            </div>
+
+            <mat-card-content>
+                <mat-form-field class="container" appearance="outline">
+                    <input type="firstName" matInput placeholder="First Name" formControlName="firstName" autocomplete="firstName">
+                    <mat-error *ngIf="signUpForm.controls['firstName'].hasError('required')">
+                        First Name <strong>required</strong>
+                    </mat-error>
+                    <mat-error
+                        *ngIf="(signUpForm.controls['firstName'].hasError('pattern') || signUpForm.controls['firstName'].hasError('minlength')) && !signUpForm.controls['firstName'].hasError('required')">
+                        Not a valid <strong>First Name</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="container" appearance="outline">
+                    <input type="lastName" matInput placeholder="Last Name" formControlName="lastName" autocomplete="lastName">
+                    <mat-error *ngIf="signUpForm.controls['lastName'].hasError('required')">
+                        Name <strong>required</strong>
+                    </mat-error>
+                    <mat-error
+                        *ngIf="(signUpForm.controls['lastName'].hasError('pattern') || signUpForm.controls['lastName'].hasError('minlength')) && !signUpForm.controls['lastName'].hasError('required')">
+                        Not a valid <strong>Last Name</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="container" appearance="outline">
+                    <input type="email" matInput placeholder="Email" formControlName="email" autocomplete="email">
+                    <mat-error *ngIf="signUpForm.controls['email'].hasError('required')">
+                        Email <strong>required</strong>
+                    </mat-error>
+                    <mat-error
+                        *ngIf="signUpForm.controls['email'].hasError('invalidEmail') && !signUpForm.controls['email'].hasError('required')">
+                        Not a valid <strong>Email</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="container" appearance="outline">
+                    <input [type]="hidePassword ? 'password' : 'text'" matInput placeholder="Password" formControlName="password"
+                        autocomplete="current-password">
+                        <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    <mat-error *ngIf="signUpForm.controls['password'].hasError('required')">
+                        Password <strong>required</strong>
+                    </mat-error>
+                    <mat-error
+                        *ngIf="signUpForm.controls['password'].hasError('minlength') && !signUpForm.controls['email'].hasError('required')">
+                        Password should have more than <strong>3 Characters</strong>
+                    </mat-error>
+                </mat-form-field>
+            </mat-card-content>
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <button mat-flat-button color="primary" type="submit">Sign-Up</button>
+            </div>
+        </form>
+        <p class="outside-message">
+            Already Register?
+            <a routerLink="/signin" routerLinkActive="router-link-active">Sign-In</a>
+        </p>
+    </mat-card>
+
+
+</div>

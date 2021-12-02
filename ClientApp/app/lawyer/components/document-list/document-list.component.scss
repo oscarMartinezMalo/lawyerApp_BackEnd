@@ -1,0 +1,17 @@
+.example-container {
+    height: 400px;
+    overflow: auto;
+  }
+  
+  table {
+    width: 100%;
+  }
+
+  tr:hover {
+    background-color: rgb(221, 221, 221);
+}
+
+.upload-buttom {
+  min-width: 108px;
+  margin-right: 10px !important;
+}

@@ -1,0 +1,87 @@
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
+// @import 'https://fonts.googleapis.com/css?family=Open+Sans';
+// @import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+  margin: 0px;
+}
+
+:root {
+  --primary: #083271;
+  --primary-light: #29A5FF;
+  --accent-light: #e9e9e9;
+  --accent: #083271;
+  --warm: #ff4040;
+  --green: #43A047;
+}
+
+.ng-trigger.ng-trigger-routeAnimations {
+  height: 100%;
+}
+
+.material-icons.md-18 {
+  font-size: 18px;
+}
+.material-icons.md-24 {
+  font-size: 24px;
+}
+.material-icons.md-36 {
+  font-size: 36px;
+}
+.material-icons.md-48 {
+  font-size: 48px;
+}
+
+// Router outlet heigt 100%
+.ng-tns-c0-0.ng-trigger.ng-trigger-routeAnimations {
+  height: -webkit-fill-available;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+form {
+  height: -webkit-fill-available;
+}
+
+// Login and Signin Form
+p.outside-message {
+  position: absolute;
+  top: 100%;
+  font-size: smaller;
+  font-weight: bold;
+  width: 95%;
+  text-align: end;
+
+  a {
+    text-decoration: none;
+    color: var(--primary-light);
+  }
+}
+
+.mat-flat-button {
+  border-radius: 3px !important;
+}
+
+// End Login and Signin Form
+
+
+// SnackBar
+
+.green-snackbar {
+  background-color: var(--green);
+}
+
+.red-snackbar {
+  background-color: var(--warm);
+}
+
+.mat-snack-bar-container span.mat-button-wrapper {
+  color: black;
+}

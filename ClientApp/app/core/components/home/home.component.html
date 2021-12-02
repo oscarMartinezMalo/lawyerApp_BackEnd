@@ -1,0 +1,131 @@
+<div class="content">
+    <section class="home-section">
+        <div class="home-container" fxLayout="row" fxLayout.lt-sm="column" fxFill>    
+            <div class="button-section"  fxLayout="row"  fxLayout.xs="column" fxFlex="100">
+                <div class="text-description"  fxLayout="column" fxFlex="60">
+                    <h1 class="text-title">Fill your Document in no Time</h1>
+                    <p class="text-info"> Word Processor presents a solution to help you
+                        stick to a faster and easier method of filling out general templates. 
+                        <!-- <span fxHide.lt-sm> From planning things, jotting things down, to ditching the unnecessary and organizing,
+                        things that matter, you will become an organized person.</span>  -->    
+                    </p>
+                    <!-- <a class="action-button"  mat-flat-button color="primary" [routerLink]="['/signup']" >Join Today</a> -->
+                    <!-- <a class="action-button"  mat-flat-button color="primary" [routerLink]="['/document-form-list']" >Fill Document</a> -->
+                    <a class="action-button get-started-button"  mat-raised-button [routerLink]="['/document-upload-anonymous']" >Get Started</a>
+                </div>
+    
+                <div class="image-section"  fxLayout="column" fxLayoutAlign="center center">
+                    <img src="../../../../clientapp/assets/ImageWriting.svg" class="image-cover">
+                    <!-- <app-svg-home-image style="width: 90%;"></app-svg-home-image> -->
+                </div>
+        
+            </div>
+        </div>
+    </section>
+    
+    <section class="second-section">
+        <div class="second-section-container" fxLayout="row"  fxLayout.xs="column" fxLayoutAlign="space-between center">        
+            <div class="card card-one" fxFlex="30">
+                 <div class="card-number">01</div>
+                  <h1>Create a template</h1>
+                  <p>
+                    Create or Open a word document(.docx). Fill your document. In the next step, you will create the variables you want in the document.
+                  </p>
+            </div>
+    
+            <mat-card class="card card-two" fxFlex="30">
+                <div class="card-number">02</div>
+                 <h1>Create Variables</h1>
+               <mat-card-content>
+                 <p ngNonBindable>
+                    In the document template you will have words that will change. You can create variables by putting a word between 2 braces Ex. {{VARIABLE}}
+                    </p>
+               </mat-card-content>
+           </mat-card>
+    
+           <mat-card class="card card-three" fxFlex="30">
+            <div class="card-number">03</div>
+             <h1>Submit, Process and download</h1>
+           <mat-card-content>
+             <p>
+                Submit the document(Template) the server will recognize the variables in the document, after that, you can change the variables and download the new document.
+             </p>
+           </mat-card-content>
+        </mat-card>
+        </div>
+    </section>
+
+    <section class="third-section">
+        <h1 class="section-title">How to use the application, step by step.</h1>
+        <div class="third-section-container"  fxLayoutAlign="space-around center">        
+            <div class="slider"  fxLayout="row"  fxLayout.lt-md="column"  style="width:100%" fxLayoutGap="8px">   
+                <div class="slider-pick" fxFlex="30"  fxLayout="column"  fxLayoutAlign="center center" fxLayoutGap="8px">
+                    <a class="link-buttons" mat-flat-button (click)="onScrollClick(scrollCarousel, 0)">Open Document Template</a>
+                    <a class="link-buttons" mat-flat-button (click)="onScrollClick(scrollCarousel, 300)">Create Variables</a>
+                    <a class="link-buttons" mat-flat-button (click)="onScrollClick(scrollCarousel, 600)">Submit Document Template</a>
+                    <a class="link-buttons" mat-flat-button (click)="onScrollClick(scrollCarousel, 900)">Replace Variables</a>
+                    <a class="link-buttons" mat-flat-button (click)="onScrollClick(scrollCarousel, 1300)">Download Template Filled</a>
+                </div>
+                <div class="slider-content"  fxLayoutAlign="space-around center" fxFlex="70">
+                    <div class="slide-outsite">
+                        <div class="slides" style="width: 300px;"  #scrollCarousel>
+                            <div id="slide-1">
+                                <mat-card class="example-card">
+                                    <img mat-card-image src="../../../../clientapp/assets/slidder-1.jpg" alt="Photo of a Shiba Inu">
+                                    <mat-card-content>
+                                      <p>Open a world document.</p>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                            <div id="slide-2">
+                                <mat-card class="example-card">
+                                    <img mat-card-image src="../../../../clientapp/assets/slidder-2.png" alt="Photo of a Shiba Inu">
+                                    <mat-card-content>
+                                      <p>Put your variable inside double braces.</p>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                            <div id="slide-3">
+                                <mat-card class="example-card">
+                                    <img mat-card-image src="../../../../clientapp/assets/slidder-3.jpg" >
+                                    <mat-card-content>
+                                      <p>Upload your template with variables.</p>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                            <div id="slide-4">
+                                <mat-card class="example-card">
+                                    <img mat-card-image src="../../../../clientapp/assets/slidder-4.jpg" alt="Photo of a Shiba Inu">
+                                    <mat-card-content>
+                                      <p>Replace the variables in the application.</p>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                            <div id="slide-5">
+                                <mat-card class="example-card">
+                                    <img mat-card-image src="../../../../clientapp/assets/slidder-5.png" alt="Photo of a Shiba Inu">
+                                    <mat-card-content>
+                                      <p>Your Processed template will be downloaded</p>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                        </div>
+                    </div>                  
+                </div>             
+               
+              </div>
+        </div>
+    </section>
+
+    <section class="fourth-section">
+        <h1 class="section-title">Watch and <span>learn.</span></h1>
+        <p class="section-subtitle">For better understanding watch this video with all the feature we offers</p>
+
+        <div class="video-size">
+            <div class="video-wrapper">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/hLBOKY2MLXw" title="YouTube video player" frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+</div>

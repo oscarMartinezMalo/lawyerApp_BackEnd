@@ -1,0 +1,15 @@
+<mat-form-field appearance="outline" style="width: 100%;">
+    <mat-label>Your team</mat-label>
+    <mat-select [disabled]="disabled" [(ngModel)]="value" #teamName="ngModel" name="teamName"
+      (selectionChange)="selectChange($event)" [compareWith]="compareFn" [required]='required'>
+      <!-- <mat-option>--</mat-option> -->
+      <mat-option *ngFor="let team of teams" [value]="team">
+        {{team}}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="teamName.errors?.required">Please choose a <strong>team</strong></mat-error>
+  
+    <div style="position:relative; top: 8px; height: 2px; overflow: hidden;">
+      <mat-progress-bar mode="query" *ngIf="showProgressbar"></mat-progress-bar>
+    </div>
+  </mat-form-field>

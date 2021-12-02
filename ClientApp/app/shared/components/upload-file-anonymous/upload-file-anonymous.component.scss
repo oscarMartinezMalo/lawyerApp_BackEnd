@@ -1,0 +1,45 @@
+:host {
+    height: 100%;
+}
+
+.container-wrapper {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 100%;
+    background-image: url("/assets/uploadBackground.svg");
+    background-repeat: no-repeat;
+    background-position-x: left;
+    background-size: cover;
+    // @media only screen and (max-width: 992px) {
+    //   background-size: 100%;
+    // }
+}
+
+mat-card {
+    &.custom-card {
+      max-width: 800px;
+    }
+    .mat-card-actions {
+      margin: 0px !important;
+    }
+  
+    & h1 {
+      color: var(--primary);
+    }
+  }
+
+  
+  .error-message {
+    background-color: var(--warm);
+    border-radius: 5px;
+    margin: 2px;
+    padding: 5px;
+  }
+
+  .success-message {
+    background-color: var(--green);
+    border-radius: 5px;
+    margin: 2px;
+    padding: 5px;
+  }

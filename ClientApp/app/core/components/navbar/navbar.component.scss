@@ -1,0 +1,135 @@
+$toolbar: 60px;
+
+.navbar-solid-color {
+    background: rgb(8,50,113);
+    background: linear-gradient(45deg, rgba(8,50,113,1) 0%, rgba(0,73,182,1) 66%, rgba(8,50,113,1) 100%);
+}
+
+.navbar-transparent {
+    background-color: transparent !important;
+}
+
+.nav-container{
+    padding: 0 10%;
+    width: 100%;
+}
+
+mat-toolbar.mat-toolbar {
+    height: $toolbar;
+    // // background-color: transparent;
+    // background: rgb(8,50,113);
+    // background: linear-gradient(45deg, rgba(8,50,113,1) 0%, rgba(0,73,182,1) 66%, rgba(8,50,113,1) 100%);
+    position: absolute;
+    z-index: 10;
+}
+
+/* Main area */
+.sidenav-container {
+    height: calc(100% - #{$toolbar});
+
+    a.mat-list-item.active {
+        box-sizing: border-box;
+    }
+
+    .panel-wrapper.mat-expansion-panel {
+        box-shadow: none;
+    }
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.expansion-wrapper {
+    .mat-list-item-content {
+        font-size: 90%;
+        padding-left: 30px !important;
+    }
+
+    .mat-expansion-panel {
+        // background-color: var(--primary);
+    }
+
+    .mat-expansion-panel-body {
+        padding: 0px;
+    }
+
+    .mat-expansion-panel-header-title {
+        // color: var(--primary-light);
+    }
+
+    .mat-expansion-panel-header:not([aria-disabled="true"]) {
+        // background-color: var(--primary);
+        border-radius: 0px;
+        // padding: 0px 16px;
+    }
+}
+
+.mat-expansion-indicator::after {
+    // color: var(--primary-light) !important;
+}
+
+.sidenav {
+    // background-color: var(--accent) !important;
+
+    .mat-list-base .mat-list-item {
+        background-color: var(--accent);
+        color: white;
+    }
+}
+
+.user-name {
+    padding-right: 12px;
+}
+
+.user-photo {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+}
+
+.mat-drawer-inner-container .mat-nav-list .mat-list-item-content:hover {
+    background-color: var(--accent);
+}
+
+mat-sidenav.mat-drawer {
+    background-color: var(--accent) !important;
+}
+
+mat-sidenav.mat-drawer.mat-sidenav.sidenav.ng-tns-c184-2.ng-trigger.ng-trigger-transform.ng-star-inserted.mat-drawer-over.mat-drawer-opened {
+    background-color: var(--accent);
+}
+
+mat-nav-list.mat-nav-list{
+    margin-top: 50px !important;
+}
+
+button.ng-star-inserted.mat-stroked-button {
+    // background: var(--primary);
+    color: white;
+}
+
+.mat-stroked-button:not([disabled]) {
+    border: 2px solid white;
+    border-radius: 20px;
+}
+
+.logo {
+    margin-top: 10px;
+    width: 50px;
+    outline: none;
+}
+
+.mat-menu-content {
+    .material-icons, span {
+        color: var(--primary);
+    }
+}
+
+.action-buttons {
+    justify-content: space-around;
+}
+
+.sidenav-container{
+    height: 100% !important;
+}

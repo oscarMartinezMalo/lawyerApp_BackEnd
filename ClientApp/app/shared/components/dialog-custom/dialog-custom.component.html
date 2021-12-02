@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>
+    {{title}}
+</h2>
+
+<div mat-dialog-content>
+    <p>{{message}}</p>
+</div>
+
+<div mat-dialog-actions>
+    <button mat-flat-button (click)="onDismiss()">No</button>
+    <button mat-flat-button color="primary" (click)="onConfirm()" style="width: auto;">Yes</button>
+</div>

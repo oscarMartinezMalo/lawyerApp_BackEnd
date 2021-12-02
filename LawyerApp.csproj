@@ -31,6 +31,7 @@
   <ItemGroup>
     <Folder Include="documents\anonymous\" />
     <Folder Include="documents\temp\" />
+    <Folder Include="ClientApp\" />
   </ItemGroup>
 
 </Project>

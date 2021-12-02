@@ -1,0 +1,81 @@
+<mat-progress-bar style="position: fixed;" [mode]="progressBarMode" value="0"
+    [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
+</mat-progress-bar>
+
+<div class="container-wrapper">
+    <mat-card class="mat-custom-authen">
+
+        <div *ngFor="let oneError of formErrors" class="error-message" div fxLayout="row" fxLayoutAlign="start center"> 
+            <strong> {{oneError.description}}</strong>
+        </div>
+    
+
+        <form [formGroup]="profileForm" novalidate (ngSubmit)="onSubmit()">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <h2 style="font-weight: 900;">Update User</h2>
+            </div>
+
+            <mat-card-content>
+                <mat-form-field class="container" appearance="outline">
+                    <mat-label>First Name</mat-label>
+                    <input type="firstName" matInput placeholder="First Name" formControlName="firstName" autocomplete="firstName">
+                    <mat-error *ngIf="profileForm.controls['firstName'].hasError('required')">
+                        First Name <strong>required</strong>
+                    </mat-error>
+                    <mat-error
+                        *ngIf="(profileForm.controls['firstName'].hasError('pattern') || profileForm.controls['firstName'].hasError('minlength')) && !profileForm.controls['firstName'].hasError('required')">
+                        Not a valid <strong>First Name</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="container" appearance="outline">
+                    <mat-label>Last Name</mat-label>
+                    <input type="lastName" matInput placeholder="Last Name" formControlName="lastName" autocomplete="lastName">
+                    <mat-error *ngIf="profileForm.controls['lastName'].hasError('required')">
+                        Name <strong>required</strong>
+                    </mat-error>
+                    <mat-error
+                        *ngIf="(profileForm.controls['lastName'].hasError('pattern') || profileForm.controls['lastName'].hasError('minlength')) && !profileForm.controls['lastName'].hasError('required')">
+                        Not a valid <strong>Last Name</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="container" appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input type="email" matInput placeholder="Email" formControlName="email" autocomplete="email">
+                    <mat-error *ngIf="profileForm.controls['email'].hasError('required')">
+                        Email <strong>required</strong>
+                    </mat-error>
+                    <mat-error
+                        *ngIf="profileForm.controls['email'].hasError('invalidEmail') && !profileForm.controls['email'].hasError('required')">
+                        Not a valid <strong>Email</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <button mat-flat-button color="primary" type="submit">Update</button>
+            </div>
+            </mat-card-content>
+        </form>
+
+        <mat-card  style="background-color: rgb(250, 250, 250);">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <h2 style="font-weight: 900;">Roles</h2>
+            </div>
+            <mat-card-content>
+    
+            <mat-chip-list aria-label="role selection">
+                <mat-chip *ngFor="let role of roleList;let indexOfelement=index;" [color]="availableColors[(indexOfelement % 3)].color" selected>
+                    {{role.name}} 
+                </mat-chip>
+            </mat-chip-list>
+    
+            </mat-card-content>
+    
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <button mat-flat-button color="primary"  (click)="this.router.navigate(['/addRolesToUser/', userId ])">Update Roles</button>
+            </div>
+        </mat-card>
+    </mat-card>
+</div>

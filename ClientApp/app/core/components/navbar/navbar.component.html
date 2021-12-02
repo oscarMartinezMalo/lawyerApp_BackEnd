@@ -1,0 +1,92 @@
+
+<mat-toolbar color="primary" [class]= "toolbarColor">
+    <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer?.toggle()"
+    *ngIf="(isHandset$ | async) && (authService.user$ | async)">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+    </button>
+
+    <div class="nav-container">
+        <div fxLayout="row" fxLayoutAlign="start center" fxFlex="50%">
+
+            <img src="../../../../clientapp/assets/logo.svg" class="logo" [routerLink]="(authService.user$ | async) ? ['cases'] : ['/home']" routerLinkActive="router-link-active">
+            <span class="spacer" *ngIf="isHandset$ | async"></span>
+        </div>
+    
+        <div fxLayout="row" fxLayoutAlign="end center" fxFlex="50%" class="action-buttons">
+            <div *ngIf='!(authService.user$ | async)' fxLayoutGap="8px">
+                <button routerLinkActive="active" routerLink="/signin" (click)="drawerClose()" #rla="routerLinkActive"
+                    [ngClass]="rla.isActive ?  'mat-stroked-button mat-button-base' : 'mat-button'">
+                    Sign In
+                </button>            
+    
+                <button routerLinkActive="active" routerLink="/signup" (click)="drawerClose()" #rlac="routerLinkActive"
+                    [ngClass]="rlac.isActive ?  'mat-stroked-button mat-button-base' : 'mat-button' ">
+                    Sign Up
+                </button>
+            </div>
+    
+            <div *ngIf="(authService.user$ | async) as user">
+                <button mat-button class="example-icon" [matMenuTriggerFor]="menu">
+                    <mat-icon class="material-icons md-dark" style="margin-right: 5px;">account_circle</mat-icon>
+                    <span class="user" *ngIf='!(isHandset$ | async)'>{{user.firstName}}</span>
+                    <!-- <img class="user-photo" aria-hidden [src]="resolvePhotoUrl()" /> -->
+                </button>
+    
+                <mat-menu #menu="matMenu">
+                    <button type="button" routerLinkActive="active" mat-menu-item *ngIf='(isHandset$ | async)'
+                        fxLayoutAlign="center center" style="background-color: darkgray;">
+                        <span> <strong>{{user.firstName}}</strong> </span>
+                    </button>
+    
+                    <!-- <button type="button" routerLinkActive="active" mat-menu-item class="example-icon">
+                        <mat-icon class="material-icons md-dark ">settings</mat-icon>
+                        <span>Settings</span>
+                    </button> -->
+                    <button mat-menu-item [matMenuTriggerFor]="admin" *ngIf="authService.checkRoleAuthorization(user,['Admin'])">Admin</button>
+    
+    
+                    <button type="button" routerLinkActive="active" mat-menu-item routerLink="/profile">
+                        <span>Update Profile</span>
+                    </button>
+    
+                    <button type="button" routerLinkActive="active" mat-menu-item routerLink="/change-password">
+                        <span>Change Password</span>
+                    </button>
+    
+                    <button type="button" routerLinkActive="active" mat-menu-item (click)="authService.logOut()">
+                        <mat-icon class="material-icons md-dark">power_settings_new</mat-icon>
+                        <span>Logout</span>
+                    </button>
+                </mat-menu>
+    
+                <mat-menu #admin="matMenu">
+                    <button mat-menu-item routerLink="/roles">Roles</button>
+                    <button mat-menu-item routerLink="/users">Users</button>
+                  </mat-menu>
+            </div>
+    
+        </div>
+    </div>
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+
+    <mat-sidenav #drawer class="sidenav" color="primary" [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+        [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="!(isHandset$ | async)"
+        *ngIf="authService.user$ | async">
+        <!-- [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false"  *ngIf="(authService.user | async) && (authService.user$ | async)"> -->
+
+        <mat-nav-list >
+            <a *ngIf="userIsLawyerorAdmin" mat-list-item (click)="drawerClose()" routerLinkActive="active" [routerLink]="['/cases']">Cases</a>
+            <mat-divider></mat-divider>
+            <a *ngIf="userIsLawyerorAdmin" mat-list-item (click)="drawerClose()" routerLinkActive="active" [routerLink]="['/clients']">Clients</a>
+            <mat-divider></mat-divider>
+            <a mat-list-item (click)="drawerClose()" routerLinkActive="active" [routerLink]="['/documents']">Documents</a>
+            <mat-divider></mat-divider>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <ng-content></ng-content>
+    </mat-sidenav-content>
+</mat-sidenav-container>

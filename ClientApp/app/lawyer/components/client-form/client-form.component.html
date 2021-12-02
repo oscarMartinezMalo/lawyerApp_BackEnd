@@ -1,0 +1,57 @@
+<mat-progress-bar style="position: fixed;" [mode]="progressBarMode" value="0"
+    [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
+</mat-progress-bar>
+
+<form [formGroup]="clientForm" novalidate (ngSubmit)="onSubmit()"
+ fxLayout="row" fxLayoutAlign="space-around center"  fxLayoutGap="10px">
+    
+    <mat-card class="create-event-card" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+        <mat-toolbar color="primary" fxLayoutAlign="center center">
+            <span>{{ title }}</span>
+        </mat-toolbar>
+
+        <mat-card-content style="padding: 0px 10px 0px 10px;">
+            <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap.gt-sm="10px">
+
+                <mat-form-field appearance="outline" fxFlex="48" fxFlex.xs="100">
+                    <mat-label>First Name *</mat-label>
+                    <input matInput placeholder="Case number" formControlName="firstName" />
+                    <mat-error *ngIf="clientForm.controls['firstName'].hasError('required')">
+                        First Name is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" fxFlex="48" fxFlex.xs="100">
+                    <mat-label>Last Name *</mat-label>
+                    <input matInput placeholder="Last Name" formControlName="lastName" />
+                    <mat-error *ngIf="clientForm.controls['lastName'].hasError('required')">
+                        Last Name is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" fxFlex="48" fxFlex.xs="100">
+                    <mat-label>Address *</mat-label>
+                    <input matInput placeholder="Address" formControlName="address" />
+                    <mat-error *ngIf="clientForm.controls['address'].hasError('required')">
+                        Address is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" fxFlex="48" fxFlex.xs="100">
+                    <mat-label>Phone *</mat-label>
+                    <input matInput placeholder="Phone" formControlName="phone" />
+                    <mat-error *ngIf="clientForm.controls['phone'].hasError('required')">
+                        Phone is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+
+            </div>
+        </mat-card-content>
+               
+        <mat-card-actions style="padding: 0px;">
+            <button mat-flat-button (click)="this.router.navigate(['/clients'])">Cancel</button>
+            <button mat-flat-button color="primary" type="submit"> Save </button>
+        </mat-card-actions>
+    </mat-card>
+
+</form>

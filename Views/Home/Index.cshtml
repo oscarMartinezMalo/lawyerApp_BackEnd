@@ -1,8 +1,10 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+@section Scripts {
+    <script src="~/clientapp/runtime-es5.js"></script>
+    <script src="~/clientapp/polyfills-es5.js"></script>
+    <script src="~/clientapp/styles-es5.js"></script>
+    <script src="~/clientapp/vendor-es5.js"></script>
+    <script src="~/clientapp/main-es5.js"></script>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<app-root></app-root> 

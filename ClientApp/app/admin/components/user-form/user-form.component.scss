@@ -1,0 +1,21 @@
+:host {
+    height: 100%;
+}
+
+.container-wrapper {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 100%;
+}
+
+.mat-custom-authen {
+    width: 400px;
+}
+
+.error-message {
+    background-color: var(--warm);
+    border-radius: 5px;
+    margin: 2px;
+    padding: 5px;
+  }

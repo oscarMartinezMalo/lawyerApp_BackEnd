@@ -1,0 +1,55 @@
+<mat-progress-bar style="position: fixed;" [mode]="progressBarMode" value="0"
+    [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
+</mat-progress-bar>
+<div class="container-wrapper">        
+    <mat-card class="mat-custom-authen">
+        <div class="error-message" fxLayout="row" fxLayoutAlign="center center" *ngIf="signForm.hasError('userPass')"> 
+            <strong> Wrong User or Password</strong>
+        </div>
+        <div class="error-message" div fxLayout="row" fxLayoutAlign="center center" *ngIf="signForm.hasError('accountNotConfirmed')"> 
+            <strong> Email not confirmed yet. Please your confirm the email </strong>
+        </div>        
+
+        <form [formGroup]="signForm" novalidate (ngSubmit)="onSubmit()">
+            <div fxLayout="row" fxLayoutAlign="start center" class="mat-typography">
+                <h2 style="font-weight: 800;">Sign-In</h2>
+            </div>
+
+            <mat-card-content>
+                <mat-form-field class="container" appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input type="email" matInput placeholder="Email" formControlName="email" autocomplete="email">
+                    <mat-error *ngIf="signForm.controls['email'].hasError('required')">
+                        Email <strong>required</strong>
+                    </mat-error>
+                    <mat-error
+                        *ngIf="signForm.controls['email'].hasError('invalidEmail') && !signForm.controls['email'].hasError('required')">
+                        Not a valid <strong>Email</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="container" appearance="outline">
+                    <mat-label>Password</mat-label>
+                    <input [type]="hidePassword ? 'password' : 'text'" matInput placeholder="Password" formControlName="password"
+                        autocomplete="new-password">
+                        <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    <mat-error *ngIf="signForm.controls['password'].hasError('required')">
+                        Password <strong>required</strong>
+                    </mat-error>
+                    <mat-error
+                        *ngIf="signForm.controls['password'].hasError('minlength') && !signForm.controls['email'].hasError('required')">
+                        Password should have more than <strong>3 Characters</strong>
+                    </mat-error>
+                </mat-form-field>
+            </mat-card-content>
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <button mat-flat-button color="primary" type="submit">Sign-In</button>
+            </div>
+        </form>
+        <p class="outside-message">
+            Not Register or Forgot password?
+            <a routerLink="/signup" routerLinkActive="router-link-active">Sign-Up</a> ||
+            <a routerLink="/forgot-password" routerLinkActive="router-link-active">Forgot Password?</a>
+        </p>
+    </mat-card>
+</div>

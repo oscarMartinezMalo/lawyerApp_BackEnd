@@ -1,0 +1,41 @@
+<mat-progress-bar style="position: fixed;" [mode]="progressBarMode" value="0"
+    [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
+</mat-progress-bar>
+
+
+<form [formGroup]="roleForm" novalidate (ngSubmit)="onSubmit()"
+fxLayout="row" fxLayoutAlign="space-around center"  fxLayoutGap="10px">
+
+    <mat-card class="create-event-card" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+        <mat-toolbar color="primary" fxLayoutAlign="center center">
+            <span>EDIT ROLE NAME</span>
+        </mat-toolbar>
+
+        <mat-card-content style="padding: 0px 10px 0px 10px;">
+            <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap.gt-sm="10px">
+
+                <mat-form-field appearance="outline" fxFlex="48" fxFlex.xs="100">
+                    <mat-label>Role Id</mat-label>
+                    <input matInput placeholder="Role Id" formControlName="id" readonly/>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" fxFlex="48" fxFlex.xs="100">
+                    <mat-label>Name</mat-label>
+                    <input matInput placeholder="Name" formControlName="name" />
+                    <mat-error *ngIf="roleForm.controls['name'].hasError('required')">
+                        Role Name is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+
+            </div>
+        </mat-card-content>
+                
+        <mat-card-actions style="padding: 0px;">
+            <button type="button" mat-stroked-button (click)="this.router.navigate(['/addUsersToRole', roleIdUrl])">Add Users to Role</button>
+            <button type="button"  mat-stroked-button (click)="this.router.navigate(['/roles'])">Cancel</button>
+            <button mat-flat-button color="primary" type="submit"> Save </button>
+        </mat-card-actions>
+    </mat-card>
+</form>
+
+  

@@ -1,0 +1,35 @@
+<div class="container-wrapper"  fxLayout="row" fxLayout.lt-sm="column" fxFill>
+
+    <mat-card class="mat-custom-authen"  fxLayout="column"  fxLayoutGap="10px">
+        <!-- Messages -->
+        <div class="success-message" div fxLayout="row" fxLayoutAlign="center center" *ngIf="fileUploadedMessage == 'showSuccess'"> 
+            <strong> File was uploaded successfully. </strong>
+        </div>   
+        <div class="error-message" div fxLayout="row" fxLayoutAlign="center center"  *ngIf="fileUploadedMessage == 'showError'"> 
+            <strong> Something went wrong file was not uploaded. </strong>
+        </div>   
+
+        <!-- Progress bar -->
+        <mat-progress-bar *ngIf="progressBarValue" class="example-margin" [color]="color" [mode]="mode" [value]="progressBarValue">
+        </mat-progress-bar> 
+    
+        <div fxLayout="row" fxLayoutAlign="start center" class="mat-typography">
+            <h2 style="font-weight: 800;">Process File</h2>
+        </div>
+        <div>
+            <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)" (click)="onInitialize()"
+            accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+            <button class="action-button" mat-flat-button color="primary"  type="button" (click)="fileInput.click(); showSpinner=true">
+                <span style="margin-right: 10px;">Select File</span>
+                <!-- <mat-spinner *ngIf="showSpinner" color="accent" diameter="20" style="display: inline-block;"></mat-spinner> -->
+            </button>
+              {{ fileSelectedName}}
+             <button *ngIf="fileSelectedName" mat-icon-button color="warn" (click)="onRemoveDocument()">
+                <mat-icon>close</mat-icon>
+             </button>
+        </div>
+
+        <button *ngIf="selectedFile" class="action-button"  mat-flat-button color="primary"  type="button" (click)="onUpload()">Upload</button>
+    </mat-card>
+
+</div>
