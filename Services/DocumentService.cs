@@ -25,6 +25,11 @@ namespace LawyerApp.Services
         public async Task<string> Upload(IFormFile formFile)
         {
             string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "documents");
+
+            //Create directory if not exits
+            if (!Directory.Exists(uploadFolder)) Directory.CreateDirectory(uploadFolder);
+
+
             var uniqueFileName = DateTime.Now.ToString("yyyyMMddTHH-mm-ssZ") + "_" + Guid.NewGuid().ToString() + "_" + formFile.FileName;
             string fileAddress = Path.Combine(uploadFolder, uniqueFileName);
 
@@ -118,7 +123,11 @@ namespace LawyerApp.Services
                 //          .Replace(newValue);
             }
 
-            string newDocumentFilePath = Path.Combine(Directory.GetCurrentDirectory(), "documents\\temp", documentName); // Create a path to save Document
+            //Create directory if not exits
+            var directoryFile = Path.Combine(Directory.GetCurrentDirectory(), "documents\\temp");
+            if (!Directory.Exists(directoryFile)) Directory.CreateDirectory(directoryFile);
+
+            string newDocumentFilePath = Path.Combine(directoryFile, documentName); // Create a path to save Document
 
             dc.Save(newDocumentFilePath, new DocxSaveOptions());  // Save Document as Word in temp file
             return newDocumentFilePath;
@@ -128,6 +137,10 @@ namespace LawyerApp.Services
         {
             // Save file on file system
             string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "documents/anonymous/");
+
+            //Create directory if not exits
+            if (!Directory.Exists(uploadFolder)) Directory.CreateDirectory(uploadFolder);
+
             var uniqueFileName = DateTime.Now.ToString("yyyyMMddTHH-mm-ssZ") + "_" + Guid.NewGuid().ToString() + "_" + formFile.FileName;
             string fileAddress = Path.Combine(uploadFolder, uniqueFileName);
 
@@ -165,7 +178,11 @@ namespace LawyerApp.Services
                 }                          
             }
 
-            string newDocumentFilePath = Path.Combine(Directory.GetCurrentDirectory(), "documents\\temp", documentName); // Create a path to save Document
+            //Create directory if not exits
+            var directoryFile = Path.Combine(Directory.GetCurrentDirectory(), "documents\\temp");
+            if (!Directory.Exists(directoryFile)) Directory.CreateDirectory(directoryFile);
+
+            string newDocumentFilePath = Path.Combine(directoryFile, documentName); // Create a path to save Document
 
             dc.Save(newDocumentFilePath, new DocxSaveOptions());  // Save Document as Word in temp file
             return newDocumentFilePath;

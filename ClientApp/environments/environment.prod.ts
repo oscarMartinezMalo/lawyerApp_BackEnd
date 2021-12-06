@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+    production: true,
+    baseUrl: 'https://lawyerapp20211204000150.azurewebsites.net/',
 };

@@ -351,3 +351,6 @@ MigrationBackup/
 
 # Documents uploaded by user
 documents/
+
+config.json
+wwwroot/clientapp/

@@ -34,4 +34,9 @@
     <Folder Include="ClientApp\" />
   </ItemGroup>
 
+  <Target Name="MyPublishScripts" BeforeTargets="BeforePublish">
+    <Exec Command="npm install" />
+    <Exec Command="ng build" />
+  </Target>
+
 </Project>
