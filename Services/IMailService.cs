@@ -6,5 +6,7 @@
         void SendAccountConfirmation(string to, string subject, string confirmationLink);
         void SendResetPasswordLink(string to, string subject, string resetLink);
 
+        void SendAccountConfirmationSendGrid(string to, string subject, string confirmationLink);
+        void SendResetPasswordLinkSendGrid(string to, string subject, string resetLink);
     }
 }

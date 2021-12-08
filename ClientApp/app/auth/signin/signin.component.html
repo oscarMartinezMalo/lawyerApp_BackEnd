@@ -7,7 +7,7 @@
             <strong> Wrong User or Password</strong>
         </div>
         <div class="error-message" div fxLayout="row" fxLayoutAlign="center center" *ngIf="signForm.hasError('accountNotConfirmed')"> 
-            <strong> Email not confirmed yet. Please your confirm the email </strong>
+            <strong> Email not confirmed yet. Please confirm your the email </strong>
         </div>        
 
         <form [formGroup]="signForm" novalidate (ngSubmit)="onSubmit()">

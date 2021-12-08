@@ -80,5 +80,46 @@ namespace LawyerApp.Services
             }
         }
 
+        public async void SendResetPasswordLinkSendGrid(string to, string subject, string resetLink)
+        {
+            try
+            {
+                await emailFactory.Create()
+                    .To(to, to)
+                    .Subject(subject)
+                    .UsingTemplateFromFile($"{Directory.GetCurrentDirectory()}/wwwroot/emails/resetPassword.cshtml",
+                    new
+                    {
+                        Subject = subject,
+                        ResetLink = resetLink,
+                    })
+                    .SendAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Reset Link Email was not send", ex);
+            }
+        }
+
+        public async void SendAccountConfirmationSendGrid(string to, string subject, string confirmationLink)
+        {
+            try
+            {
+                await emailFactory.Create()
+                    .To(to, to)
+                    .Subject(subject)
+                    .UsingTemplateFromFile($"{Directory.GetCurrentDirectory()}/wwwroot/emails/accountConfirmation.cshtml",
+                    new
+                    {
+                        Subject = subject,
+                        ConfirmationLink = confirmationLink,
+                    })
+                    .SendAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Account Confirmation link Email was not send", ex);
+            }
+        }
     }
 }

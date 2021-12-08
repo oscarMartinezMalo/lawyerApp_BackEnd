@@ -68,23 +68,37 @@ namespace LawyerApp
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            // FluentEmail service configuration
-            var from = Configuration.GetSection("Gmail")["From"];
-            var gmailSender = Configuration.GetSection("Gmail")["Sender"];
-            var gmailPassword = Configuration.GetSection("Gmail")["Password"];
-            var gmailPort = Convert.ToInt32(Configuration.GetSection("Gmail")["Port"]);
+        // FluentEmail SMTP service configuration
+            //var from = Configuration.GetSection("Gmail")["From"];
+            //var gmailSender = Configuration.GetSection("Gmail")["Sender"];
+            //var gmailPassword = Configuration.GetSection("Gmail")["Password"];
+            //var gmailPort = Convert.ToInt32(Configuration.GetSection("Gmail")["Port"]);
+            
+            //services
+            //    .AddFluentEmail(gmailSender, from)
+            //    .AddRazorRenderer()
+            //    .AddSmtpSender(new SmtpClient("smtp.gmail.com")
+            //    {
+            //        UseDefaultCredentials = false,
+            //        Port = gmailPort,
+            //        Credentials = new NetworkCredential(gmailSender, gmailPassword),
+            //        EnableSsl = true,
+            //    });
+        // End FluentEmail service configuration
 
-            services
-                .AddFluentEmail(gmailSender, from)
+        // FluentEmail SendGrid
+            //var sendGridSender = Configuration.GetSection("Sendgrid")["Sender"];
+            //var sendGridKey = Configuration.GetSection("Sendgrid")["SendgridKey"];
+            //var sendGridfrom = Configuration.GetSection("Sendgrid")["From"];
+
+            var sendGridSender = "ommalor@gmail.com";
+            var sendGridKey = "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";
+            var sendGridfrom = "Word Process";
+
+            services.AddFluentEmail(sendGridSender, sendGridfrom)
                 .AddRazorRenderer()
-                .AddSmtpSender(new SmtpClient("smtp.gmail.com") 
-                { 
-                    UseDefaultCredentials = false,
-                    Port = gmailPort,
-                    Credentials = new NetworkCredential(gmailSender, gmailPassword),
-                    EnableSsl = true,
-                });
-            // End FluentEmail service configuration
+                .AddSendGridSender(sendGridKey);
+        // End FluentEmail SendGrid
 
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IDocumentService, DocumentService>();
