@@ -73,6 +73,7 @@ namespace LawyerApp.Controllers
 
         [HttpPost]
         [ActionName("")]
+        [RequestSizeLimit(7 * 1024 * 1024)]       //unit is bytes => 7Mb
         public async Task<IActionResult> UploadFileForUser(IFormFile document)
         {
             LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
@@ -109,12 +110,13 @@ namespace LawyerApp.Controllers
         [HttpPost]
         [ActionName("uploadFileAnonymous")]
         [AllowAnonymous]
+        [RequestSizeLimit(7 * 1024 * 1024)]       //unit is bytes => 7Mb
         public async Task<IActionResult> UploadFileAnonymous(IFormFile document)
         {
             try
             {
                 // Save file in folder directory
-                FileNameVariablesDto fileNameVariables = await this.documentService.UploadProcessDownload(document);
+                FileNameVariablesDto fileNameVariables = await this.documentService.UploadProcessRetreiveVariables(document);
 
                 // Save information of the file in database
                 var newDocument = new Document
@@ -133,9 +135,9 @@ namespace LawyerApp.Controllers
                     //return Created($"/api/documents/{newDocument.Id}", document);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest("File was not saved");
+                return BadRequest("File was not proccess");
             }
 
             return Ok("File successfully submited!!!");

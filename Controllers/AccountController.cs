@@ -212,7 +212,7 @@ namespace LawyerApp.Controllers
                 return BadRequest(ex);
             }
 
-            return Ok(new { message = "A reset link was sent to your Email" + config.GetSection("Sendgrid")["SendgridKey"]});
+            return Ok(new { message = "A reset link was sent to your Email"});
         }
 
         //[HttpGet]

@@ -133,7 +133,7 @@ namespace LawyerApp.Services
             return newDocumentFilePath;
         }
 
-        public async Task<FileNameVariablesDto> UploadProcessDownload(IFormFile formFile)
+        public async Task<FileNameVariablesDto> UploadProcessRetreiveVariables(IFormFile formFile)
         {
             // Save file on file system
             string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "documents/anonymous/");

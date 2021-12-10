@@ -17,6 +17,6 @@ namespace LawyerApp.Services
         List<string> ReadDocumentDetectVariables(string documentName, string directoryToStore);
         string ProcessAndCreateDocument(List<Object> values, string documentName);
         string ProcessAndCreateDocument(List<Object> values, string documentName, string directoryToStore);
-        Task<FileNameVariablesDto> UploadProcessDownload(IFormFile formFile);
+        Task<FileNameVariablesDto> UploadProcessRetreiveVariables(IFormFile formFile);
     }
 }
