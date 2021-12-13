@@ -1,4 +1,6 @@
-﻿namespace LawyerApp.Services
+﻿using System.Threading.Tasks;
+
+namespace LawyerApp.Services
 {
     public interface IMailService
     {
@@ -6,7 +8,7 @@
         void SendAccountConfirmation(string to, string subject, string confirmationLink);
         void SendResetPasswordLink(string to, string subject, string resetLink);
 
-        void SendAccountConfirmationSendGrid(string to, string subject, string confirmationLink);
+        Task<FluentEmail.Core.Models.SendResponse> SendAccountConfirmationSendGrid(string to, string subject, string confirmationLink);
         void SendResetPasswordLinkSendGrid(string to, string subject, string resetLink);
     }
 }

@@ -64,18 +64,22 @@ namespace LawyerApp.Controllers
                 
                 if (user != null)
                 {
+
                     if (!user.EmailConfirmed && await userManager.CheckPasswordAsync(user, model.Password))
                     {
                         // Send email to confirm the account
                         var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
                         var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = confirmationToken }, Request.Scheme);
                         //mailService.SendAccountConfirmation($"{user.Email}", "Confirm your account", confirmationLink);
-                        mailService.SendAccountConfirmationSendGrid($"{user.Email}", "Confirm your account", confirmationLink);                        
+                        var emailSent = mailService.SendAccountConfirmationSendGrid($"{user.Email}", "Confirm your account", confirmationLink);
+                        
+                        if(! emailSent.Result.Successful) { return BadRequest(emailSent.Result); }
 
                         return BadRequest("Email not confirmed yet, you should have an email to confirmed the account");
                     }
 
                     var result = await signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+
                     if (result.Succeeded)
                     {
                         // Create the Token

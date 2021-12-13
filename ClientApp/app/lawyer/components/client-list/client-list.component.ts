@@ -46,7 +46,6 @@ export class ClientListComponent implements OnInit {
       if (dialogResult) {
         await this.clientsService.deleteClientFromLawyer(clientToDelete.id);
         const index = this.dataSource.data.indexOf(clientToDelete);
-        console.log(index);
         this.dataSource.data.splice(index, 1);
         this.dataSource._updateChangeSubscription();
       }});

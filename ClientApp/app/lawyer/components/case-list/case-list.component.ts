@@ -34,7 +34,6 @@ export class CaseListComponent implements OnInit {
   }
 
   onRowClick(row) {
-    console.log(row);
     this.router.navigate(['cases', row.id]);
   }
 

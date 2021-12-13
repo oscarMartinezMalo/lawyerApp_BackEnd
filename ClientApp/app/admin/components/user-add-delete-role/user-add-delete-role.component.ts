@@ -116,7 +116,6 @@ export class UserAddDeleteRoleComponent implements OnInit {
 
     this.progressBarMode = 'indeterminate';
     try {
-      console.log(this.userId, roleId);
       let roleCreated = await this.adminService.addRoleToUser( this.userId, roleId);
       this.dataSource.data.push(roleCreated);    
       this.dataSource._updateChangeSubscription();
