@@ -2,9 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
+import { DocumentFile } from 'ClientApp/app/shared/models/document.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { finalize } from 'rxjs/operators';
-import { DocumentFile } from 'ClientApp/app/shared/models/document.model';
 import { DocumentService } from 'ClientApp/app/shared/services/document.service';
 
 @Component({
@@ -29,7 +29,7 @@ export class DocumentFormFillComponent implements OnInit {
   ) {
    }
 
-  async ngOnInit() {       
+  async ngOnInit() {   
     this.documentId = this.route.snapshot.paramMap.get('id');
     this.document = await this.documentService.getDocumentById(this.documentId);
     let documentVariables = await this.documentService.getVariablesOfDocument(this.document.id) as string[];
@@ -75,5 +75,9 @@ export class DocumentFormFillComponent implements OnInit {
 
   getPropertyName(obj){
     return Object.keys(obj)[0];
+  }
+
+  showFormAfterValuesLoad(){
+    return  ((this.fillForm.get('documentVariables').value as []).length)? true : false;
   }
 }

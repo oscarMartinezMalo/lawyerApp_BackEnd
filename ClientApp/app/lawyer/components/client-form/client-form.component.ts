@@ -26,10 +26,10 @@ export class ClientFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.clientForm = this.fb.group({
-      firstName: [null, Validators.required],
-      lastName: [null, Validators.required],
-      address: [null, Validators.required],
-      phone: [null, [Validators.required]]
+      firstName: [null, [Validators.required, Validators.minLength(3)]],
+      lastName: [null, [Validators.required, Validators.minLength(3)]],
+      address: [null, [Validators.required, Validators.minLength(5)]],
+      phone: [null, [Validators.required, Validators.minLength(6)]]
     });
     
     this.fillFormEdit();
@@ -51,8 +51,8 @@ export class ClientFormComponent implements OnInit {
     }
   }
 
-  async onSubmit() {    
-    if (this.clientForm.invalid) { return; }
+  async onSubmit() { 
+    if (!this.clientForm.valid) { return; }
 
     this.progressBarMode = 'indeterminate';
     try {

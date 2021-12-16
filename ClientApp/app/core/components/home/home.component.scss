@@ -21,6 +21,7 @@ section{
         transform: translateY(-15%);
         margin-top: 50px;
         margin-bottom: 80px;
+        z-index: 10;
     }
 
     .text-description > h1, p {
@@ -39,13 +40,13 @@ section{
     }
 
     p {
-        font-size: 1.4vw;
-        line-height: 1.5vw;
+        font-size: 1.4em;
+        line-height: 20px;
         width: 70%;
         padding-bottom: 10px;
         @media (max-width: 600px) {
-            font-size: small;
-            line-height: initial ;          
+            // font-size: small;
+            // line-height: initial ;          
         }
     }
 
@@ -55,16 +56,17 @@ section{
     
         .image-section {
             width: 100%;
-            transform: translateY(-50px);
+            transform: translateY(-50px);            
+            z-index: 1;
             @media (max-width: 600px) {
                 transform: translateY(-130px);            
             }
             // border-radius: 0px 50% 50% 0px;
-            // background-image:linear-gradient(to top, rgba(45, 46, 53, 0.5), rgba(17, 88, 94, 0.3)), url("/assets/images/boyPitching.jpg");
+            // background-image:linear-gradient(to top, rgba(45, 46, 53, 0.5), rgba(17, 88, 94, 0.3)), url("clientapp/assets/images/boyPitching.jpg");
             // background-size: cover;
             // background-repeat: no-repeat;
             // border: 0px;
-            // background-image: url("/assets/images/cover.svg");
+            // background-image: url("clientapp/assets/images/cover.svg");
             .image-cover {
                 width: 120%;
                 height: auto;
@@ -150,7 +152,7 @@ section{
     
     background-color: aliceblue;  
     border-radius: 30px;  
-    // background-image: url("/assets/secondBackground.svg");
+    // background-image: url("clientapp/assets/secondBackground.svg");
     // background-size: 60%;
     // background-repeat: no-repeat;
     // background-position: left top ;
@@ -213,21 +215,18 @@ section{
       width: 100%;
       padding: 40px;
   }
-  
-  .slides {
+
+.slides {
     display: flex;
-    
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    
     /*
     scroll-snap-points-x: repeat(300px);
     scroll-snap-type: mandatory;
     */
-  }
+}
   .slides::-webkit-scrollbar {
     width: 10px;
     height: 5px;
@@ -243,7 +242,7 @@ section{
     scroll-snap-align: start;
     flex-shrink: 0;
     width: 300px;
-    height: 300px;
+    height: 330px;
     margin-right: 50px;
     border-radius: 10px;
     background: #eee;
@@ -300,7 +299,7 @@ section{
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
     background-color: white;
-    background-image: url("/assets/BottomImage.svg");
+    background-image: url("clientapp/assets/BottomImage.svg");
     background-size: 50%;
     background-repeat: no-repeat;
     background-position: left bottom ;

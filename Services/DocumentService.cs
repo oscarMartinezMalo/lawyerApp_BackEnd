@@ -22,9 +22,9 @@ namespace LawyerApp.Services
             this.logger = logger;
         }
 
-        public async Task<string> Upload(IFormFile formFile)
+        public async Task<string> Upload(IFormFile formFile, string userIdentityName)
         {
-            string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "documents");
+            string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "documents", userIdentityName);
 
             //Create directory if not exits
             if (!Directory.Exists(uploadFolder)) Directory.CreateDirectory(uploadFolder);
@@ -34,7 +34,6 @@ namespace LawyerApp.Services
             string fileAddress = Path.Combine(uploadFolder, uniqueFileName);
 
             //formFile.CopyTo(new FileStream(fileAddress, FileMode.Create));
-
 
             using (Stream fileStream = new FileStream(fileAddress, FileMode.Create))
             {
@@ -58,15 +57,15 @@ namespace LawyerApp.Services
             return File.ReadAllBytes(filePath);
         }
 
-        public void DeleteDocument(string documentName)
+        public void DeleteDocument(string documentName, string userIdentityName)
         {
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", documentName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", userIdentityName, documentName);
             File.Delete(filePath);
         }
 
-        public List<string> ReadDocumentDetectVariables(string documentName)
+        public List<string> ReadDocumentDetectVariables(string folderAndDocumentNamePath)
         {
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", documentName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", folderAndDocumentNamePath);
             DocumentCore dc = DocumentCore.Load(filePath);
 
             var regExp = @"\{{(.*?)\}}";  // Select what is between {{ example }}
@@ -100,9 +99,9 @@ namespace LawyerApp.Services
             return listNoDuplicate;
         }
 
-        public string ProcessAndCreateDocument( List<Object> listVariables,string documentName)
+        public string ProcessAndCreateDocumentForUser( List<Object> listVariables,string documentName, string userIdentityName)
         {
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", documentName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "documents", userIdentityName, documentName);
             DocumentCore dc = DocumentCore.Load(filePath);
 
             foreach (var variableObj in listVariables)
@@ -124,7 +123,7 @@ namespace LawyerApp.Services
             }
 
             //Create directory if not exits
-            var directoryFile = Path.Combine(Directory.GetCurrentDirectory(), "documents\\temp");
+            var directoryFile = Path.Combine(Directory.GetCurrentDirectory(), "documents", userIdentityName, "temp");
             if (!Directory.Exists(directoryFile)) Directory.CreateDirectory(directoryFile);
 
             string newDocumentFilePath = Path.Combine(directoryFile, documentName); // Create a path to save Document

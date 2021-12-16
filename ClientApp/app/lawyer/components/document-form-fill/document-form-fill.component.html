@@ -1,11 +1,13 @@
-<mat-progress-bar style="position: fixed;" [mode]="progressBarMode" value="0"
-    [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
-</mat-progress-bar>
-
 <form [formGroup]="fillForm" class="container" (ngSubmit)="onSubmit()"
 fxLayout="row" fxLayoutAlign="space-around center"  fxLayoutGap="10px">
 
-    <mat-card class="create-event-card" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+    <mat-card class="create-event-card" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px"
+    *ngIf="showFormAfterValuesLoad(); else showSpinner">
+
+        <mat-progress-bar [mode]="progressBarMode" value="0"
+        [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
+        </mat-progress-bar>
+
         <mat-toolbar color="primary" fxLayoutAlign="center center">
             <span>Fill Document</span>
         </mat-toolbar>
@@ -26,4 +28,7 @@ fxLayout="row" fxLayoutAlign="space-around center"  fxLayoutGap="10px">
             <button mat-flat-button color="primary" type="submit"> Process & Download </button>
         </mat-card-actions>
     </mat-card>
+    <ng-template #showSpinner>
+        <mat-spinner></mat-spinner>
+    </ng-template>
 </form>

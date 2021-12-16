@@ -40,7 +40,7 @@ export class CaseFormComponent implements OnInit {
   async ngOnInit() {
 
     this.caseForm = this.fb.group({
-      caseNumber: [null, Validators.required],
+      caseNumber: [null, [Validators.required, Validators.minLength(4)]],
       type: [null, Validators.required],
       clientId: ['' , [Validators.required, RequireMatch]]
     });

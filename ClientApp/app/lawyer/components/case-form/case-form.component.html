@@ -1,11 +1,12 @@
-<mat-progress-bar style="position: fixed;" [mode]="progressBarMode" value="0"
-    [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
-</mat-progress-bar>
-
 <form [formGroup]="caseForm" novalidate (ngSubmit)="onSubmit()"
  fxLayout="row" fxLayoutAlign="space-around center"  fxLayoutGap="10px">
     
     <mat-card class="create-event-card" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+
+        <mat-progress-bar [mode]="progressBarMode" value="0"
+        [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
+        </mat-progress-bar>
+
         <mat-toolbar color="primary" fxLayoutAlign="center center">
             <span>{{ title }}</span>
         </mat-toolbar>
@@ -18,6 +19,10 @@
                     <mat-error *ngIf="caseForm.controls['caseNumber'].hasError('required')">
                         Case Number is <strong>required</strong>
                     </mat-error>
+                    <mat-error
+                    *ngIf="caseForm.controls['caseNumber'].hasError('minlength') && !caseForm.controls['caseNumber'].hasError('required')">
+                    Case Number should have more than <strong>4 Characters</strong>
+                </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" fxFlex="48" fxFlex.xs="100">

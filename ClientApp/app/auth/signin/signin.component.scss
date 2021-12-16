@@ -7,6 +7,10 @@
     justify-content: space-evenly;
     align-items: center;
     height: 100%;
+    background-image: url("/clientapp/assets/uploadBackground.svg");
+    background-repeat: no-repeat;
+    background-position-x: left;
+    background-size: cover;
 }
 
 .mat-custom-authen {

@@ -1,9 +1,11 @@
 
-<mat-progress-bar style="position: fixed;" [mode]="progressBarMode" value="0"
-    [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
-</mat-progress-bar>
 
-    <div class="container" fxLayout="column" fxLayoutAlign="start center">    
+
+    <mat-progress-bar style="position: fixed;" [mode]="progressBarMode" value="0"
+    [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
+    </mat-progress-bar>
+
+    <div class="container" fxLayout="column" fxLayoutAlign="start center"  style="padding-top: 50px;">    
         <mat-toolbar style="font-size: 19px; color: var(--primary);" fxLayoutAlign="center center" display="block">
             <span>  ADD OR REMOVE USERS FROM  ROLE ({{roleName}}) </span>
         </mat-toolbar>

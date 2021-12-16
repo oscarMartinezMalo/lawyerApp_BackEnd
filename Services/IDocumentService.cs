@@ -9,13 +9,13 @@ namespace LawyerApp.Services
 {
     public interface IDocumentService
     {
-        Task<string> Upload(IFormFile formFile);
+        Task<string> Upload(IFormFile formFile, string userIdentityName);
         byte[] GetDocumentByName(string documentName);
         byte[] GetDocumentByCompletePath(string filePath);
-        void DeleteDocument(string documentName);
-        List<string> ReadDocumentDetectVariables(string documentName);
+        void DeleteDocument(string documentName,string userIdentityName);
+        List<string> ReadDocumentDetectVariables(string folderAndDocumentNamePath);
         List<string> ReadDocumentDetectVariables(string documentName, string directoryToStore);
-        string ProcessAndCreateDocument(List<Object> values, string documentName);
+        string ProcessAndCreateDocumentForUser(List<Object> values, string documentName, string userIdentityName);
         string ProcessAndCreateDocument(List<Object> values, string documentName, string directoryToStore);
         Task<FileNameVariablesDto> UploadProcessRetreiveVariables(IFormFile formFile);
     }

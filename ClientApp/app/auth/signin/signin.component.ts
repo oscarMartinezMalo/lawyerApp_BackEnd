@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AccountConfirmationError } from 'ClientApp/app/shared/errors/account-confirmation-error';
+import { AppError } from 'ClientApp/app/shared/errors/app-error';
 import { WrongCredentialError } from 'ClientApp/app/shared/errors/wrong-crendential-error';
 import { AuthService } from '../../shared/services/auth.service';
-// import { SharedService } from 'src/app/shared/shared.service';
+// import { SharedService } from 'ClientApp/app/shared/shared.service';
 
 
 @Component({

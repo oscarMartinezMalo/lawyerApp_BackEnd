@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-    baseUrlCloud: 'https://localhost:44375/',
-    baseUrl: 'https://lawyerapp20211204000150.azurewebsites.net//',
+    baseUrlAzure: 'https://localhost:44375/',
+    baseUrl: 'https://lawyerapp20211204000150.azurewebsites.net/',
 };
 
 /*

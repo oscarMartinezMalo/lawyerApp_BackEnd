@@ -49,7 +49,7 @@ namespace LawyerApp.Controllers
             LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
             var document = this.unitOfWork.Documents.GetDocumentById(id, user.Id);
 
-            return File(this.documentService.GetDocumentByName(document.NameInDirectory), "application/octet-stream", document.Name);
+            return File(this.documentService.GetDocumentByName(User.Identity.Name + "/" + document.NameInDirectory), "application/octet-stream", document.Name);
         }
 
         [HttpGet]
@@ -80,7 +80,7 @@ namespace LawyerApp.Controllers
             try
             {
                 // Save file in folder directory
-                string directoryFileName = await this.documentService.Upload(document);
+                string directoryFileName = await this.documentService.Upload(document, User.Identity.Name);
 
                 // Save information of the file in database
                 var newDocument = new Document
@@ -95,7 +95,7 @@ namespace LawyerApp.Controllers
                 unitOfWork.AddEntity(newDocument);
                 if (unitOfWork.Complete())
                 {
-                    return Created($"/api/documents/{newDocument.Id}", document);
+                    return Created($"/api/documents/{User.Identity.Name}/{newDocument.Id}", document);
                 }
             }
             catch (Exception ex)
@@ -158,7 +158,7 @@ namespace LawyerApp.Controllers
                 this.unitOfWork.Documents.Delete(documentToDelete);   // Delete Document from Database
                 if (!unitOfWork.Complete()) return BadRequest("Failed to delete Document");
 
-                this.documentService.DeleteDocument(documentToDelete.NameInDirectory);  // Delete document from document directory
+                this.documentService.DeleteDocument(documentToDelete.NameInDirectory, User.Identity.Name);  // Delete document from document directory
 
                 return Ok();
             }
@@ -205,7 +205,9 @@ namespace LawyerApp.Controllers
             LawyerUser user = await userManager.FindByNameAsync(User.Identity.Name);
             var document = this.unitOfWork.Documents.GetDocumentById(id, user.Id);
 
-            var result = this.documentService.ReadDocumentDetectVariables(document.NameInDirectory);
+            string fileWithFolderPath = User.Identity.Name + "/"+ document.NameInDirectory;
+
+            var result = this.documentService.ReadDocumentDetectVariables(fileWithFolderPath);
             return result;
         }
 
@@ -242,7 +244,7 @@ namespace LawyerApp.Controllers
             try
             {
                 // Process document and get the path of new document generated
-                string pathToDocumentGenerated = this.documentService.ProcessAndCreateDocument(listVariables, document.NameInDirectory);
+                string pathToDocumentGenerated = this.documentService.ProcessAndCreateDocumentForUser(listVariables, document.NameInDirectory, User.Identity.Name);
 
                 // Return physical document to the user
                 return File(this.documentService.GetDocumentByCompletePath(pathToDocumentGenerated), "application/octet-stream", document.Name);

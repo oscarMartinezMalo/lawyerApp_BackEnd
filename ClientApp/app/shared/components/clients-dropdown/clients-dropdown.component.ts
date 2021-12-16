@@ -44,7 +44,7 @@ showProgressbar = false;
 onChange: (_: any) => void;
 onTouched: () => void;
 
-//Oscar compareWith: (o1: any, o2: any) => boolean;
+//compareWith: (o1: any, o2: any) => boolean;
 compareFn(c1: any, c2: any): boolean {
     return c1 && c2 ? c1 === c2 : c1 === c2;
 }

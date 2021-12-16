@@ -8,7 +8,7 @@
     <div class="nav-container">
         <div fxLayout="row" fxLayoutAlign="start center" fxFlex="50%">
 
-            <img src="../../../../clientapp/assets/logo.svg" class="logo" [routerLink]="(authService.user$ | async) ? ['cases'] : ['/home']" routerLinkActive="router-link-active">
+            <img src="../../../../clientapp/assets/logo.svg" class="logo" [routerLink]="(authService.user$ | async) ? ['user-home-page'] : ['/home']" routerLinkActive="router-link-active">
             <span class="spacer" *ngIf="isHandset$ | async"></span>
         </div>
     

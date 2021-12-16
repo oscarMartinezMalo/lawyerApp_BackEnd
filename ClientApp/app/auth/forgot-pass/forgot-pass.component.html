@@ -1,9 +1,10 @@
-<mat-progress-bar style="position: fixed;" [mode]="progressBarMode" value="0"
-    [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
-</mat-progress-bar>
 <div class="container-wrapper">
 
     <mat-card class="mat-custom-authen">
+        <mat-progress-bar [mode]="progressBarMode" value="0"
+         [style.visibility]="progressBarMode ? 'visible' : 'hidden'">
+        </mat-progress-bar>
+
         <form [formGroup]="forgotPasswordForm" novalidate (ngSubmit)="onSubmit()">
             <div fxLayout="row" fxLayoutAlign="start center" class="mat-typography">
                 <h2 style="font-weight: 800;">Reset Password</h2>

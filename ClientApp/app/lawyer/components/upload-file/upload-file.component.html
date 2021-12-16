@@ -13,8 +13,9 @@
         <mat-progress-bar *ngIf="progressBarValue" class="example-margin" [color]="color" [mode]="mode" [value]="progressBarValue">
         </mat-progress-bar> 
     
-        <div fxLayout="row" fxLayoutAlign="start center" class="mat-typography">
-            <h2 style="font-weight: 800;">Upload File</h2>
+        <div fxLayout="column" fxLayoutAlign="start center" class="mat-typography">
+            <h2 style="font-weight: 800;">Upload File</h2>            
+            <h3 class="doc-description">Please select a World document (doc, docx)</h3>
         </div>
         <div>
             <input #fileInput type="file" style="display: none;" (change)="onFileSelected($event)">
@@ -29,6 +30,7 @@
         </div>
 
         <button *ngIf="selectedFile" class="action-button"  mat-flat-button color="primary"  type="button" (click)="onUpload()">Upload</button>
+        <h5 style="text-align: right;">Max upload file size: 7MB</h5>
     </mat-card>
 
 </div>

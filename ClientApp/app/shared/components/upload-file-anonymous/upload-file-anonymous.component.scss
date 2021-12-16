@@ -27,6 +27,13 @@ mat-card {
     & h1 {
       color: var(--primary);
     }
+
+    h3.doc-description {
+      background-color: papayawhip;
+      font-weight: 500;
+      padding: 0px 8px 0px 8px;
+      border-radius: 3px;
+    }
   }
 
   

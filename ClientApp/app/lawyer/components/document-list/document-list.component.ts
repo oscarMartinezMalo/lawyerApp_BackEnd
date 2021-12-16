@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { DialogData, DialogCustomComponent } from 'ClientApp/app/shared/components/dialog-custom/dialog-custom.component';
 import { Client } from 'ClientApp/app/shared/models/client.model';
 import { DocumentFile } from 'ClientApp/app/shared/models/document.model';
+import { ClientsService } from 'ClientApp/app/shared/services/clients.service';
 import { DocumentService } from 'ClientApp/app/shared/services/document.service';
 
 @Component({

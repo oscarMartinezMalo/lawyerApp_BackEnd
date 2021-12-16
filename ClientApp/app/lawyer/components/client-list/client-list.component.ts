@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { DialogData, DialogCustomComponent } from 'ClientApp/app/shared/components/dialog-custom/dialog-custom.component';
+import { DialogCustomComponent, DialogData } from 'ClientApp/app/shared/components/dialog-custom/dialog-custom.component';
 import { Client } from 'ClientApp/app/shared/models/client.model';
 import { ClientsService } from 'ClientApp/app/shared/services/clients.service';
 
@@ -46,6 +46,7 @@ export class ClientListComponent implements OnInit {
       if (dialogResult) {
         await this.clientsService.deleteClientFromLawyer(clientToDelete.id);
         const index = this.dataSource.data.indexOf(clientToDelete);
+        console.log(index);
         this.dataSource.data.splice(index, 1);
         this.dataSource._updateChangeSubscription();
       }});
