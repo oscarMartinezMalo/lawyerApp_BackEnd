@@ -353,4 +353,4 @@ MigrationBackup/
 documents/
 
 config.json
-wwwroot/clientapp/
+# wwwroot/clientapp/
