@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { map, shareReplay, take, tap } from 'rxjs/operators';
 import { MatSidenav } from '@angular/material/sidenav';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
 import { AuthService } from 'ClientApp/app/shared/services/auth.service';
+import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
 import { SharedService } from 'ClientApp/app/shared/services/shared.service';
 
 @Component({

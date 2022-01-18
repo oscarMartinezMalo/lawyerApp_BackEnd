@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { UserExitsError } from 'ClientApp/app/shared/errors/user-exits-error';
 import { AuthService } from 'ClientApp/app/shared/services/auth.service';
 
 @Component({

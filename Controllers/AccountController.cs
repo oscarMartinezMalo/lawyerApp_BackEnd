@@ -61,7 +61,7 @@ namespace LawyerApp.Controllers
             if (ModelState.IsValid)
             {
                 var user = await userManager.FindByNameAsync(model.Email);
-                
+
                 if (user != null)
                 {
 
@@ -72,8 +72,8 @@ namespace LawyerApp.Controllers
                         var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = confirmationToken }, Request.Scheme);
                         //mailService.SendAccountConfirmation($"{user.Email}", "Confirm your account", confirmationLink);
                         var emailSent = mailService.SendAccountConfirmationSendGrid($"{user.Email}", "Confirm your account", confirmationLink);
-                        
-                        if(! emailSent.Result.Successful) { return BadRequest(emailSent.Result); }
+
+                        if (!emailSent.Result.Successful) { return BadRequest(emailSent.Result); }
 
                         return BadRequest("Email not confirmed yet, you should have an email to confirmed the account");
                     }
@@ -94,7 +94,7 @@ namespace LawyerApp.Controllers
                         //var userRoles = await this.GetUserRoles(user);
                         var userRoles = await userManager.GetRolesAsync(user);
                         foreach (var role in userRoles)
-                        {                            
+                        {
                             claims.Add(new Claim(ClaimTypes.Role, role));
                         }
                         ////
@@ -143,17 +143,18 @@ namespace LawyerApp.Controllers
 
                 var result = await userManager.CreateAsync(user, model.Password);
                 var test = Request.GetDisplayUrl();
+
                 if (result.Succeeded)
                 {
                     // Create a role and assign it to the User
-                    //var resultRole = await roleManager.CreateAsync(new IdentityRole("Admin"));
-                    //await userManager.AddToRoleAsync(user, "Admin");
+                    var resultRole = await roleManager.CreateAsync(new IdentityRole("Lawyer"));
+                    await userManager.AddToRoleAsync(user, "Lawyer");
 
                     // Create and Send a cofirmation Link to user account after create a new account(confirm account).
                     var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
                     var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = confirmationToken }, Request.Scheme);
                     //mailService.SendAccountConfirmation($"{user.Email}", "Confirm your account", confirmationLink);
-                    mailService.SendAccountConfirmationSendGrid($"{user.Email}", "Confirm your account", confirmationLink);                    
+                    _ = mailService.SendAccountConfirmationSendGrid($"{user.Email}", "Confirm your account", confirmationLink);
 
                     return Created("", model);
                 }
@@ -216,7 +217,7 @@ namespace LawyerApp.Controllers
                 return BadRequest(ex);
             }
 
-            return Ok(new { message = "A reset link was sent to your Email"});
+            return Ok(new { message = "A reset link was sent to your Email" });
         }
 
         //[HttpGet]
@@ -244,7 +245,7 @@ namespace LawyerApp.Controllers
 
             var user = mapper.Map<LawyerUser, UserDto>(userAccount);
 
-            user.Roles = await this.SetUserRoles( userAccount);
+            user.Roles = await this.SetUserRoles(userAccount);
 
             return Ok(user);
         }
@@ -341,7 +342,8 @@ namespace LawyerApp.Controllers
             user.UserName = model.Email;
 
             var result = await userManager.UpdateAsync(user);
-            if(result.Succeeded) {
+            if (result.Succeeded)
+            {
                 return Created("User Profile was successfully updated", user);
             }
 
@@ -379,7 +381,8 @@ namespace LawyerApp.Controllers
 
 
 
-                if (result.Succeeded) {
+                if (result.Succeeded)
+                {
                     IdentityRole newIdentityRole = await roleManager.FindByNameAsync(role.Name);
                     return Created("Role was created successfully", newIdentityRole);
                 }
@@ -401,9 +404,9 @@ namespace LawyerApp.Controllers
         {
             try
             {
-               var roleToDelete = await roleManager.FindByIdAsync(id);
-               var result =  await roleManager.DeleteAsync(roleToDelete);
-               if (result.Succeeded) return Ok();
+                var roleToDelete = await roleManager.FindByIdAsync(id);
+                var result = await roleManager.DeleteAsync(roleToDelete);
+                if (result.Succeeded) return Ok();
             }
             catch (Exception ex)
             {
@@ -543,7 +546,7 @@ namespace LawyerApp.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("User was not deleted",ex);
+                logger.LogError("User was not deleted", ex);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
 
@@ -661,11 +664,14 @@ namespace LawyerApp.Controllers
         }
         ////
         // Get the Roles from an User
-        private async Task<IList<IdentityRole>> SetUserRoles( LawyerUser userDb)
+        private async Task<IList<IdentityRole>> SetUserRoles(LawyerUser userDb)
         {
             var roles = new List<IdentityRole>();
             foreach (var role in roleManager.Roles)
             {
+                logger.LogError($"Email {role.Name}");
+                logger.LogError($"Email {userDb}");
+
                 if (await userManager.IsInRoleAsync(userDb, role.Name))
                 {
                     roles.Add(role);

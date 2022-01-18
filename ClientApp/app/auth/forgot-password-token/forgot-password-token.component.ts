@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AppError } from 'ClientApp/app/shared/errors/app-error';
 import { WrongCredentialError } from 'ClientApp/app/shared/errors/wrong-crendential-error';
 import { AuthService } from 'ClientApp/app/shared/services/auth.service';
 import { ConfirmValidatorDirective } from '../confirm-validator.directive';

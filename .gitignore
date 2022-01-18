@@ -354,3 +354,5 @@ documents/
 
 config.json
 # wwwroot/clientapp/
+/Properties
+/.config

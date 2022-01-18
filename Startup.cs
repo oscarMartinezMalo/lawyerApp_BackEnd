@@ -12,8 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Net;
-using System.Net.Mail;
 using System.Reflection;
 using System.Text;
 
@@ -31,6 +29,8 @@ namespace LawyerApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+
             // Adding support for JWT
             services.AddAuthentication()
                 .AddCookie(cfg => cfg.SlidingExpiration = true)
@@ -63,8 +63,8 @@ namespace LawyerApp
             o.TokenLifespan = TimeSpan.FromHours(5));
 
             // Change token lifespan of just Email Confirmation token 
-            services.Configure< CustomEmailConfirmationTokenProviderOptions>(o =>
-           o.TokenLifespan = TimeSpan.FromDays(2));
+            services.Configure<CustomEmailConfirmationTokenProviderOptions>(o =>
+          o.TokenLifespan = TimeSpan.FromDays(2));
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
@@ -94,7 +94,7 @@ namespace LawyerApp
             services.AddFluentEmail(sendGridSender, sendGridfrom)
                 .AddRazorRenderer()
                 .AddSendGridSender(sendGridKey);
-        // End FluentEmail SendGrid
+            // End FluentEmail SendGrid
 
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IDocumentService, DocumentService>();

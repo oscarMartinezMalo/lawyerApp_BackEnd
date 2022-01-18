@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { DialogData, DialogCustomComponent } from 'ClientApp/app/shared/components/dialog-custom/dialog-custom.component';
+import { DialogCustomComponent, DialogData } from 'ClientApp/app/shared/components/dialog-custom/dialog-custom.component';
 import { Role } from 'ClientApp/app/shared/models/role.model';
 import { AdminService } from 'ClientApp/app/shared/services/admin.service';
 @Component({

@@ -6,6 +6,7 @@ import { ProgressBarMode } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { environment } from 'ClientApp/environments/environment';
 import { DocumentFile } from '../../models/document.model';
 import { FileIdFileVariables } from '../../models/fileIdFileVariables.model';
 import { AuthService } from '../../services/auth.service';

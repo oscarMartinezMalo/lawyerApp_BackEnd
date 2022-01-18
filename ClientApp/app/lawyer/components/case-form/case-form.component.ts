@@ -3,13 +3,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, ChildActivationStart, Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { RequireMatch } from 'ClientApp/app/shared/directives/requireMatch.Validator';
 import { Case } from 'ClientApp/app/shared/models/case.model';
 import { Client } from 'ClientApp/app/shared/models/client.model';
 import { CasesService } from 'ClientApp/app/shared/services/cases.service';
 import { ClientsService } from 'ClientApp/app/shared/services/clients.service';
-import { Observable, of } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-case-form',

@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { DocumentService } from 'ClientApp/app/shared/services/document.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DocumentFile } from 'ClientApp/app/shared/models/document.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { finalize } from 'rxjs/operators';
-import { DocumentService } from 'ClientApp/app/shared/services/document.service';
 
 @Component({
   selector: 'app-document-form-fill',

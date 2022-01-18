@@ -4,13 +4,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { startWith, switchMap } from 'rxjs/operators';
 import { DialogData, DialogCustomComponent } from 'ClientApp/app/shared/components/dialog-custom/dialog-custom.component';
 import { RoleExitsError } from 'ClientApp/app/shared/errors/role-exist-error';
 import { Role } from 'ClientApp/app/shared/models/role.model';
 import { User } from 'ClientApp/app/shared/models/user.model';
 import { AdminService } from 'ClientApp/app/shared/services/admin.service';
-import { Observable, of } from 'rxjs';
-import { startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-add-delete-role',

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CasesService } from 'ClientApp/app/shared/services/cases.service';
 import { ClientsService } from 'ClientApp/app/shared/services/clients.service';
 
 @Component({

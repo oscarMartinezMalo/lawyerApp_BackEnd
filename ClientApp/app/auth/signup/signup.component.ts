@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../shared/services/auth.service';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { AppError } from 'ClientApp/app/shared/errors/app-error';
+import { WrongCredentialError } from 'ClientApp/app/shared/errors/wrong-crendential-error';
 import { HttpErrorResponse } from '@angular/common/http';
+import { UserExitsError } from 'ClientApp/app/shared/errors/user-exits-error';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { UserExitsError } from 'ClientApp/app/shared/errors/user-exits-error';
 
 @Component({
     selector: 'app-signup',

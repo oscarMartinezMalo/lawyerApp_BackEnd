@@ -3,6 +3,7 @@ import { Validators, FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserExitsError } from 'ClientApp/app/shared/errors/user-exits-error';
+import { WrongCredentialError } from 'ClientApp/app/shared/errors/wrong-crendential-error';
 import { AuthService } from 'ClientApp/app/shared/services/auth.service';
 
 @Component({
